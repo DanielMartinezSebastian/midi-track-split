@@ -1,0 +1,19 @@
+# dependencias
+node_modules/
+
+# salidas de la CLI
+*-tracks/
+*-tracks.zip
+
+# servidor HTTPS local (certificado autofirmado)
+.cert/
+
+# muestras de sonido descargadas con `npm run fetch-sounds` (pesadas)
+web/soundfonts/
+
+# ajustes locales de Claude Code
+.claude/settings.local.json
+
+# varios
+.DS_Store
+*.log

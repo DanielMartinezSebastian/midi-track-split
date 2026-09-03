@@ -1,0 +1,52 @@
+{
+  "name": "midi-track-split",
+  "version": "1.0.0",
+  "description": "Separa un archivo MIDI en pistas individuales. CLI + interfaz web (reproducción, solo/mute, salida a teclado MIDI y descarga).",
+  "type": "module",
+  "author": "Daniel Martínez Sebastián (https://github.com/DanielMartinezSebastian)",
+  "license": "MIT",
+  "homepage": "https://github.com/DanielMartinezSebastian/midi-track-split#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielMartinezSebastian/midi-track-split.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DanielMartinezSebastian/midi-track-split/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "midi-track-split": "bin/cli.js"
+  },
+  "scripts": {
+    "web": "node server.js",
+    "web:https": "node server.js --https",
+    "split": "node bin/cli.js",
+    "build:vendor": "node scripts/build-vendor.mjs",
+    "fetch-fonts": "node scripts/fetch-fonts.mjs",
+    "fetch-sounds": "node scripts/fetch-sounds.mjs",
+    "setup:assets": "npm run build:vendor && npm run fetch-fonts",
+    "sample": "node scripts/make-sample.js"
+  },
+  "keywords": [
+    "midi",
+    "midi-file",
+    "split",
+    "tracks",
+    "player",
+    "web-midi",
+    "cli"
+  ],
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "midi-file": "^1.2.4",
+    "selfsigned": "^5.5.0"
+  },
+  "devDependencies": {
+    "@tonejs/midi": "^2.0.28",
+    "esbuild": "^0.28.2",
+    "smplr": "^1.0.0",
+    "tone": "^15.1.22"
+  }
+}

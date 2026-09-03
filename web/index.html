@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MIDI Track Split</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="fonts/fonts.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "midi-file": "/vendor/midi-file.js",
+      "jszip": "/vendor/jszip.js",
+      "tone": "/vendor/tone.js",
+      "@tonejs/midi": "/vendor/tonejs-midi.js",
+      "smplr": "/vendor/smplr.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <main>
+    <header class="app-head">
+      <h1><img class="logo-mark" src="favicon.svg" alt="" width="56" height="56" /><span class="logo-text">MIDI Track Split</span></h1>
+      <p class="sub">Separa un archivo MIDI en pistas individuales, escúchalo y descárgalas.</p>
+    </header>
+
+    <div id="drop" class="drop">
+      <p><strong>Arrastra un archivo .mid aquí</strong></p>
+      <p>o</p>
+      <label class="btn">
+        Elegir archivo
+        <input id="file" type="file" accept=".mid,.midi,audio/midi" hidden />
+      </label>
+      <p id="filename" class="filename"></p>
+    </div>
+
+    <section id="player" class="card" hidden>
+      <div class="player-row">
+        <button id="play" class="btn">▶ Reproducir</button>
+        <button id="stop" class="btn ghost">■ Parar</button>
+        <span id="status" class="status"></span>
+        <span id="time" class="time">0:00 / 0:00</span>
+      </div>
+      <div id="progress" class="progress" role="slider" tabindex="0"
+           aria-label="Posición de reproducción" aria-valuemin="0" aria-valuenow="0">
+        <div id="bar"></div>
+      </div>
+      <p class="hint">Arrastra sobre la barra para moverte por la canción. Las pistas que suenan se iluminan.<br>Cada pista usa su instrumento General MIDI (muestras reales); la percusión se aproxima con una caja de ritmos.</p>
+
+      <div class="midi-out">
+        <button id="midi-connect" type="button" class="btn ghost">Enviar a teclado MIDI…</button>
+        <div id="midi-controls" hidden>
+          <label class="midi-field">Dispositivo
+            <select id="midi-device"><option value="">— ninguno —</option></select>
+          </label>
+          <label class="midi-field">Canal
+            <select id="midi-channel"></select>
+          </label>
+          <label class="midi-chk"><input type="checkbox" id="midi-mute-internal" /> silenciar sonido interno</label>
+          <button id="midi-rescan" type="button" class="btn ghost midi-rescan">Buscar de nuevo</button>
+        </div>
+        <p id="midi-status" class="hint"></p>
+      </div>
+    </section>
+
+    <section id="tracks" class="card" hidden>
+      <div class="tracks-head">
+        <h2>Pistas</h2>
+        <div class="export-btns">
+          <button id="merge" type="button" class="btn">⬇ MIDI combinado</button>
+          <button id="zip" type="button" class="btn ghost">⬇ Pistas (.zip)</button>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:0">Clic en el nombre para renombrar · <strong>S</strong> escucha solo esa pista · <strong>MUTE</strong> la silencia · <strong>MIDI combinado</strong> descarga un solo <code>.mid</code> sin las pistas silenciadas y con los nombres nuevos.</p>
+      <ul id="track-list"></ul>
+    </section>
+
+    <p id="error" class="error" hidden></p>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

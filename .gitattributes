@@ -1,0 +1,11 @@
+# Normaliza los finales de línea del código a LF
+* text=auto eol=lf
+
+# Binarios: nunca tocar
+*.mid    binary
+*.woff2  binary
+*.ogg    binary
+*.m4a    binary
+*.mp3    binary
+*.png    binary
+*.pem    binary
