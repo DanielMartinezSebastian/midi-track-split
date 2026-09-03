@@ -14,6 +14,9 @@ web/soundfonts/
 # ajustes locales de Claude Code
 .claude/settings.local.json
 
+# fotogramas intermedios del GIF (se regeneran con `npm run capture`)
+docs/frames/
+
 # varios
 .DS_Store
 *.log

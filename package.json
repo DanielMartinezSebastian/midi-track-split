@@ -27,7 +27,8 @@
     "fetch-fonts": "node scripts/fetch-fonts.mjs",
     "fetch-sounds": "node scripts/fetch-sounds.mjs",
     "setup:assets": "npm run build:vendor && npm run fetch-fonts",
-    "sample": "node scripts/make-sample.js"
+    "sample": "node scripts/make-sample.js",
+    "capture": "node scripts/capture.mjs"
   },
   "keywords": [
     "midi",
