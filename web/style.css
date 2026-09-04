@@ -289,7 +289,7 @@ code {
 #track-list li.playing { background: var(--mint); }
 #track-list li.playing-ext { background: var(--lav); }
 #track-list li.routed {
-  box-shadow: -8px 0 0 var(--lav), var(--sh);
+  box-shadow: inset 8px 0 0 var(--lav), var(--sh);
 }
 #track-list li.routed:not(.playing-ext) { background: #efe9fc; }
 #track-list li.muted { background: #e7e3d8; }
