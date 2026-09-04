@@ -5,7 +5,12 @@ import { Soundfont, DrumMachine } from 'smplr';
 import { splitMidi, sanitizeName, renameTrack, mergeMidi } from '../src/split-core.js';
 import { gmInstrument, drumSample } from './gm.js';
 import { MidiOut } from './midiout.js';
-import { loadSoundManifest, soundfontUrl, drumMachineUrl } from './sounds.js';
+import {
+  loadSoundManifest, soundfontUrl, drumMachineUrl,
+  SOUNDFONT_KITS, DRUM_MACHINES,
+  getSoundfontKit, setSoundfontKit, getDrumMachine, setDrumMachine,
+  isKitLocal, isDrumMachineLocal,
+} from './sounds.js';
 
 const midiOut = new MidiOut();
 
@@ -191,6 +196,20 @@ function stopInternalNotes() {
   for (const p of state.parts) {
     try { p.inst?.stop(); } catch {}
   }
+}
+
+// Descarta las muestras cargadas de un tipo ('drum' | 'sf') para que se
+// vuelvan a cargar con el banco de sonido recién elegido.
+function reloadInstrumentsFor(kind) {
+  let touched = false;
+  for (const p of state.parts) {
+    if (p.spec.type !== kind) continue;
+    try { p.inst?.stop(); } catch {}
+    try { p.inst?.disconnect(); } catch {}
+    p.inst = null;
+    touched = true;
+  }
+  if (touched) ensureInstruments();
 }
 
 function stopAllNotes() {
@@ -572,6 +591,7 @@ function renderTracks() {
   applyAudio();
   updateMergeButton();
   $('tracks').hidden = false;
+  $('soundbanks').hidden = false;
 }
 
 // Silencia / activa la pista i y refresca la interfaz.
@@ -729,6 +749,41 @@ $('zip').addEventListener('click', downloadZip);
 $('merge').addEventListener('click', downloadMerged);
 initSeek();
 initMidiOut();
+initSoundBanks();
+
+// ---------- bancos de sonido ----------
+
+async function initSoundBanks() {
+  await loadSoundManifest();
+
+  const drumSel = $('bank-drums');
+  const kitSel = $('bank-kit');
+
+  for (const d of DRUM_MACHINES) {
+    const o = document.createElement('option');
+    o.value = d.id;
+    o.textContent = d.label + (isDrumMachineLocal(d.id) ? ' (local)' : '');
+    drumSel.append(o);
+  }
+  drumSel.value = getDrumMachine();
+
+  for (const k of SOUNDFONT_KITS) {
+    const o = document.createElement('option');
+    o.value = k.id;
+    o.textContent = k.label + (isKitLocal(k.id) ? ' (local)' : '');
+    kitSel.append(o);
+  }
+  kitSel.value = getSoundfontKit();
+
+  drumSel.addEventListener('change', () => {
+    setDrumMachine(drumSel.value);
+    reloadInstrumentsFor('drum');
+  });
+  kitSel.addEventListener('change', () => {
+    setSoundfontKit(kitSel.value);
+    reloadInstrumentsFor('sf');
+  });
+}
 
 // ---------- salida MIDI externa ----------
 

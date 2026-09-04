@@ -265,6 +265,11 @@ code {
   padding: 0 4px;
 }
 
+/* ---------- Bancos de sonido ---------- */
+
+.bank-fields { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; }
+.bank-fields .midi-field { flex: 1 1 200px; }
+
 /* ---------- Lista de pistas ---------- */
 
 .tracks-head {

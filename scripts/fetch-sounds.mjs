@@ -92,6 +92,8 @@ console.log();
 
 // --- manifiesto ---
 const manifest = {
+  kit: 'MusyngKite',
+  drumMachine: 'TR-808',
   instruments: (
     await Promise.all(
       ALL_INSTRUMENTS.map(async (n) =>
