@@ -176,7 +176,7 @@ h2 {
   padding: 4px 8px;
 }
 .status:empty { display: none; }
-#mute-all.is-muted { background: var(--red); }
+#loop.is-active { background: var(--yellow); }
 .time {
   margin-left: auto;
   font-weight: 700;

@@ -41,8 +41,24 @@
       <div class="player-row">
         <button id="play" class="btn">▶ Reproducir</button>
         <button id="stop" class="btn ghost">■ Parar</button>
-        <button id="mute-all" type="button" class="btn ghost" aria-pressed="false"
-                title="Silenciar todo el sonido (interno y externo)">Mute</button>
+        <button id="loop" type="button" class="btn ghost icon-btn" aria-pressed="false"
+                title="Repetir en bucle" aria-label="Repetir en bucle">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="17 1 21 5 17 9" />
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            <polyline points="7 23 3 19 7 15" />
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+          </svg>
+        </button>
+        <button id="mute-all" type="button" class="btn ghost icon-btn" aria-pressed="false"
+                title="Silenciar todo el sonido (interno y externo)" aria-label="Silenciar todo el sonido (interno y externo)">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path class="fill" d="M3 9v6h4l5 4V5L7 9H3z" />
+            <path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7" />
+            <path class="wave" d="M18.6 5.4a9 9 0 0 1 0 13.2" />
+            <line class="slash" x1="2" y1="2" x2="22" y2="22" />
+          </svg>
+        </button>
         <span id="status" class="status"></span>
         <span id="time" class="time">0:00 / 0:00</span>
       </div>

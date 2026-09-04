@@ -25,6 +25,7 @@ let state = {
   loading: null, // promesa de carga de instrumentos
   internalMuted: false, // silenciar el sintetizador interno (sonido por el PC)
   externalMuted: false, // silenciar el envío al teclado MIDI externo
+  looping: false, // repetir la canción al llegar al final
 };
 
 function showError(msg) {
@@ -236,7 +237,6 @@ function syncMasterMuteButton() {
   const muted = state.internalMuted && state.externalMuted;
   btn.classList.toggle('is-muted', muted);
   btn.setAttribute('aria-pressed', String(muted));
-  btn.textContent = muted ? 'Muted' : 'Mute';
 }
 
 // Convierte un tiempo del reloj de Tone (segundos de AudioContext) al dominio
@@ -299,10 +299,19 @@ function seekTo(sec) {
 function tick() {
   if (state.seeking) return;
   if (Tone.getTransport().seconds >= state.duration) {
-    stopPlayback();
+    if (state.looping) seekTo(0);
+    else stopPlayback();
     return;
   }
   updateClock();
+}
+
+// Activa/desactiva la repetición en bucle.
+function setLooping(on) {
+  state.looping = on;
+  const btn = $('loop');
+  btn.classList.toggle('is-active', on);
+  btn.setAttribute('aria-pressed', String(on));
 }
 
 function updateClock() {
@@ -715,6 +724,7 @@ drop.addEventListener('drop', (e) => {
 $('play').addEventListener('click', playPause);
 $('stop').addEventListener('click', stopPlayback);
 $('mute-all').addEventListener('click', toggleMasterMute);
+$('loop').addEventListener('click', () => setLooping(!state.looping));
 $('zip').addEventListener('click', downloadZip);
 $('merge').addEventListener('click', downloadMerged);
 initSeek();
