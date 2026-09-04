@@ -23,7 +23,8 @@ let state = {
   timer: 0,
   seeking: false,
   loading: null, // promesa de carga de instrumentos
-  internalMuted: false, // silenciar el sintetizador interno (al usar MIDI externo)
+  internalMuted: false, // silenciar el sintetizador interno (sonido por el PC)
+  externalMuted: false, // silenciar el envío al teclado MIDI externo
 };
 
 function showError(msg) {
@@ -118,9 +119,11 @@ function buildPlayer(arrayBuffer) {
       entry.part = new Tone.Part((time, note) => {
         if (routedToExt(entry)) {
           // Esta pista va sólo al teclado externo.
-          const t = domTimeFromTone(time);
-          midiOut.noteOn(note.midi, note.velocity, t);
-          midiOut.noteOff(note.midi, t + Math.max(0.03, note.duration) * 1000);
+          if (!state.externalMuted) {
+            const t = domTimeFromTone(time);
+            midiOut.noteOn(note.midi, note.velocity, t);
+            midiOut.noteOff(note.midi, t + Math.max(0.03, note.duration) * 1000);
+          }
         } else if (entry.inst && !state.internalMuted) {
           // Sintetizador interno (el gain de la pista aplica mute/solo).
           if (entry.spec.type === 'drum') {
@@ -192,6 +195,27 @@ function stopInternalNotes() {
 function stopAllNotes() {
   stopInternalNotes();
   midiOut.panic();
+}
+
+// Silencia/activa el sintetizador interno (sonido por el PC).
+function setInternalMuted(muted) {
+  state.internalMuted = muted;
+  applyIconMute($('midi-mute-internal'), muted);
+  if (muted) stopInternalNotes();
+}
+
+// Silencia/activa el envío de notas al teclado MIDI externo (sin des-enrutar pistas).
+function setExternalMuted(muted) {
+  state.externalMuted = muted;
+  applyIconMute($('midi-mute-external'), muted);
+  if (muted) midiOut.panic();
+  updateMidiStatus();
+}
+
+function applyIconMute(btn, muted) {
+  if (!btn) return;
+  btn.classList.toggle('is-muted', muted);
+  btn.setAttribute('aria-pressed', String(muted));
 }
 
 // Convierte un tiempo del reloj de Tone (segundos de AudioContext) al dominio
@@ -691,7 +715,7 @@ function updateMidiStatus() {
     status.textContent =
       `Teclado “${name}” · canal ${ch} — ` +
       (routed.length
-        ? `enviando: ${routed.join(', ')}`
+        ? `enviando: ${routed.join(', ')}${state.externalMuted ? ' (silenciado)' : ''}`
         : 'pulsa EXT en una pista para enviarla');
     return;
   }
@@ -715,7 +739,8 @@ function initMidiOut() {
   const controls = $('midi-controls');
   const deviceSel = $('midi-device');
   const channelSel = $('midi-channel');
-  const internalChk = $('midi-mute-internal');
+  const internalMuteBtn = $('midi-mute-internal');
+  const externalMuteBtn = $('midi-mute-external');
   const rescanBtn = $('midi-rescan');
   const status = $('midi-status');
 
@@ -788,8 +813,6 @@ function initMidiOut() {
     midiOut.setChannel(+channelSel.value);
     updateMidiStatus();
   });
-  internalChk.addEventListener('change', () => {
-    state.internalMuted = internalChk.checked;
-    if (internalChk.checked) stopInternalNotes();
-  });
+  internalMuteBtn.addEventListener('click', () => setInternalMuted(!state.internalMuted));
+  externalMuteBtn.addEventListener('click', () => setExternalMuted(!state.externalMuted));
 }

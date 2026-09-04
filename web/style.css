@@ -238,15 +238,22 @@ h2 {
   cursor: pointer;
 }
 .midi-field select:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
-.midi-chk {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: .85rem;
-  font-weight: 600;
-  padding-bottom: 9px;
+.midi-mutes { display: flex; gap: 10px; }
+.icon-btn { padding: 9px 11px; }
+.icon-btn .icon {
+  display: block;
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.midi-chk input { width: 16px; height: 16px; accent-color: var(--ink); }
+.icon-btn .icon .fill { fill: var(--ink); stroke: none; }
+.icon-btn .icon .slash { stroke-width: 2.6; opacity: 0; }
+.icon-btn.is-muted { background: var(--red); }
+.icon-btn.is-muted .icon .slash { opacity: 1; }
 .btn.midi-rescan { padding: 8px 12px; font-size: .78rem; }
 #midi-status:empty { display: none; }
 #midi-status { line-height: 1.5; }
