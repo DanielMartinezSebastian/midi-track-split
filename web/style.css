@@ -255,7 +255,7 @@ code {
 }
 .export-btns { display: flex; gap: 10px; flex-wrap: wrap; }
 
-#track-list { list-style: none; margin: 0; padding: 0; }
+#track-list { list-style: none; margin: 18px 0 0; padding: 0; }
 #track-list li {
   display: flex;
   align-items: center;
