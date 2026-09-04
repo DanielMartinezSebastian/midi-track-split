@@ -202,6 +202,7 @@ function setInternalMuted(muted) {
   state.internalMuted = muted;
   applyIconMute($('midi-mute-internal'), muted);
   if (muted) stopInternalNotes();
+  syncMasterMuteButton();
 }
 
 // Silencia/activa el envío de notas al teclado MIDI externo (sin des-enrutar pistas).
@@ -210,12 +211,32 @@ function setExternalMuted(muted) {
   applyIconMute($('midi-mute-external'), muted);
   if (muted) midiOut.panic();
   updateMidiStatus();
+  syncMasterMuteButton();
 }
 
 function applyIconMute(btn, muted) {
   if (!btn) return;
   btn.classList.toggle('is-muted', muted);
   btn.setAttribute('aria-pressed', String(muted));
+}
+
+// Botón "Mute" del reproductor: silencia/activa interno + externo a la vez.
+function toggleMasterMute() {
+  const muted = !(state.internalMuted && state.externalMuted);
+  setInternalMuted(muted);
+  setExternalMuted(muted);
+}
+
+// Refleja en el botón "Mute" del reproductor si TODO está silenciado ahora mismo
+// (se llama también al mutear/activar interno o externo por separado, para que
+// los tres controles queden sincronizados).
+function syncMasterMuteButton() {
+  const btn = $('mute-all');
+  if (!btn) return;
+  const muted = state.internalMuted && state.externalMuted;
+  btn.classList.toggle('is-muted', muted);
+  btn.setAttribute('aria-pressed', String(muted));
+  btn.textContent = muted ? 'Muted' : 'Mute';
 }
 
 // Convierte un tiempo del reloj de Tone (segundos de AudioContext) al dominio
@@ -693,6 +714,7 @@ drop.addEventListener('drop', (e) => {
 
 $('play').addEventListener('click', playPause);
 $('stop').addEventListener('click', stopPlayback);
+$('mute-all').addEventListener('click', toggleMasterMute);
 $('zip').addEventListener('click', downloadZip);
 $('merge').addEventListener('click', downloadMerged);
 initSeek();

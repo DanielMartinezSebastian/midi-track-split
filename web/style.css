@@ -176,6 +176,7 @@ h2 {
   padding: 4px 8px;
 }
 .status:empty { display: none; }
+#mute-all.is-muted { background: var(--red); }
 .time {
   margin-left: auto;
   font-weight: 700;
