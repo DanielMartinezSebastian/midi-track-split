@@ -51,13 +51,13 @@ const anchor = (page, sel, top = 24) =>
     window.scrollBy(0, el.getBoundingClientRect().top - t);
   }, top);
 
-// clip fijo alrededor de `sel` (x/anchura reales, y desde 0)
+// clip ajustado al elemento `sel` con un margen `pad`
 async function clipFor(page, sel, pad = 24, vw = 1100) {
   await anchor(page, sel, pad);
   const b = await page.locator(sel).boundingBox();
   return {
     x: Math.max(0, Math.round(b.x - pad)),
-    y: 0,
+    y: Math.max(0, Math.round(b.y - pad)),
     width: Math.min(vw, Math.round(b.width + pad * 2)),
     height: Math.round(b.height + pad * 2),
   };
@@ -97,7 +97,6 @@ async function clipFor(page, sel, pad = 24, vw = 1100) {
   await page.click('#midi-connect');
   await page.waitForSelector('#midi-controls:not([hidden])');
   await page.selectOption('#midi-device', 'jt-mini');
-  await page.check('#midi-mute-internal');
   await wait(250);
   await shot('app', 'full');
   await shot('player', '#player');
@@ -107,10 +106,15 @@ async function clipFor(page, sel, pad = 24, vw = 1100) {
   await wait(1500);
   await shot('playing', '#tracks');
 
-  await page.click('#track-list li:nth-child(3) .solo-btn');
+  await page.click('#track-list li:nth-child(3) .ext-btn'); // pista al teclado
+  await wait(600);
+  await shot('ext', '#tracks');
+
+  await page.click('#track-list li:first-child .solo-btn'); // solo en el PC
   await wait(600);
   await shot('solo', '#tracks');
-  await page.click('#track-list li:nth-child(3) .solo-btn');
+  await page.click('#track-list li:first-child .solo-btn');
+  await page.click('#track-list li:nth-child(3) .ext-btn');
   await page.click('#stop');
   await wait(200);
 
@@ -157,23 +161,22 @@ async function clipFor(page, sel, pad = 24, vw = 1100) {
   await page.click('#midi-connect');
   await page.waitForSelector('#midi-controls:not([hidden])');
   await page.selectOption('#midi-device', 'jt-mini');
-  await page.check('#midi-mute-internal');
   await wait(300);
   await frame(4); // app cargada con salida MIDI
 
-  // reproducir: se iluminan las pistas
+  // reproducir: se iluminan las pistas (verde = PC)
   await page.click('#track-list li:last-child .locate');
-  for (let i = 0; i < 9; i++) { await wait(430); await frame(1); }
+  for (let i = 0; i < 8; i++) { await wait(430); await frame(1); }
 
-  // solo en una pista
-  await page.click('#track-list li:nth-child(3) .solo-btn');
+  // EXT: mandar una pista al teclado (se pone lila, el resto sigue en verde)
+  await page.click('#track-list li:nth-child(3) .ext-btn');
+  for (let i = 0; i < 7; i++) { await wait(430); await frame(1); }
+
+  // solo en una pista de PC (no afecta a la que va al teclado)
+  await page.click('#track-list li:first-child .solo-btn');
   for (let i = 0; i < 5; i++) { await wait(430); await frame(1); }
-  await page.click('#track-list li:nth-child(3) .solo-btn');
-
-  // silenciar otra pista
-  await page.click('#track-list li:nth-child(2) .mute-btn');
-  for (let i = 0; i < 3; i++) { await wait(430); await frame(1); }
-  await page.click('#track-list li:nth-child(2) .mute-btn');
+  await page.click('#track-list li:first-child .solo-btn');
+  await page.click('#track-list li:nth-child(3) .ext-btn'); // quitar EXT
   await page.click('#stop');
   await wait(200);
   await frame(2);

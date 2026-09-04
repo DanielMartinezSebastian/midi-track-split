@@ -269,6 +269,11 @@ code {
 }
 #track-list li:first-child { margin-top: 0; }
 #track-list li.playing { background: var(--mint); }
+#track-list li.playing-ext { background: var(--lav); }
+#track-list li.routed {
+  box-shadow: -8px 0 0 var(--lav), var(--sh);
+}
+#track-list li.routed:not(.playing-ext) { background: #efe9fc; }
 #track-list li.muted { background: #e7e3d8; }
 #track-list li.muted .tname-input { color: var(--ink); opacity: .5; text-decoration: line-through; }
 #track-list li.muted .tmeta { opacity: .45; }
@@ -309,15 +314,17 @@ code {
 #track-list li > .btn { flex: none; }
 .btn.locate,
 .btn.mute-btn,
-.btn.solo-btn {
-  padding: 9px 12px;
-  min-width: 44px;
+.btn.solo-btn,
+.btn.ext-btn {
+  padding: 9px 11px;
+  min-width: 42px;
   justify-content: center;
 }
-.btn.solo-btn { min-width: 38px; }
+.btn.solo-btn { min-width: 36px; }
 .btn.solo-btn.is-solo { background: var(--yellow); }
 .btn.locate { background: var(--sky); }
 .btn.mute-btn.is-muted { background: var(--red); }
+.btn.ext-btn.is-ext { background: var(--lav); }
 
 #track-list li.dimmed { opacity: .45; }
 
@@ -333,8 +340,9 @@ code {
   padding: 14px 16px;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 620px) {
   #track-list li { flex-wrap: wrap; }
   .tinfo { flex-basis: 100%; }
   .tname-input { max-width: 100%; }
+  #track-list li .spacer { display: none; }
 }

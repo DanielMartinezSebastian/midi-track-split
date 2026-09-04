@@ -60,9 +60,13 @@ Abre la URL, arrastra un `.mid`, y podrás:
 
 - escucharlo con el instrumento General MIDI de cada pista (muestras reales;
   la percusión del canal 10 se aproxima con una caja de ritmos TR-808);
-- **S** (solo, como en una mesa de mezclas): escuchar solo esa pista; se pueden
-  poner varias en solo a la vez; no afecta a la exportación;
+- **S** (solo, como en una mesa de mezclas): escuchar solo esa pista **en el PC**;
+  se pueden poner varias a la vez; no afecta a la exportación ni a la salida MIDI;
 - silenciar / activar pistas con el botón **MUTE** de cada fila;
+- **EXT**: enviar *solo esa pista* al teclado MIDI externo (deja de sonar en el
+  PC); el resto de pistas sigue reproduciéndose en el PC y puedes encenderlas /
+  apagarlas / ponerlas en solo con normalidad. Útil para dejar una pista en el
+  teclado hardware y seguir mezclando el resto;
 - **localizar una pista**: el botón ▶ de cada fila salta la reproducción al
   instante en que esa pista entra por primera vez (y la desilencia si hacía
   falta); la fila muestra "empieza m:ss" cuando no arranca desde el principio;
@@ -77,10 +81,9 @@ Abre la URL, arrastra un `.mid`, y podrás:
   original, sin las pistas silenciadas y con los nombres nuevos aplicados;
 - **Pistas (.zip)**: descargar todas las pistas separadas en un `.zip`;
 - **Enviar a un teclado MIDI externo** (Web MIDI): elegir dispositivo de salida y
-  canal (1-16); se envían las notas de las pistas que suenan (respeta mute/solo),
-  con opción de silenciar el sintetizador interno. Al parar / pausar / saltar se
-  manda *all-notes-off*. Requiere Chrome, Edge u Opera (Safari no lo soporta) y
-  conceder el permiso del navegador.
+  canal (1-16); luego pulsa **EXT** en las pistas que quieras mandar al teclado.
+  Al parar / pausar / saltar se manda *all-notes-off*. Requiere Chrome, Edge u
+  Opera (Safari no lo soporta) y conceder el permiso del navegador.
 
   **Si no pide permiso / no aparece el dispositivo:**
   - Estás por `http://` + IP → no es contexto seguro y la API ni existe. Usa

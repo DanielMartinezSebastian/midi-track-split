@@ -47,7 +47,7 @@
            aria-label="Posición de reproducción" aria-valuemin="0" aria-valuenow="0">
         <div id="bar"></div>
       </div>
-      <p class="hint">Arrastra sobre la barra para moverte por la canción. Las pistas que suenan se iluminan.<br>Cada pista usa su instrumento General MIDI (muestras reales); la percusión se aproxima con una caja de ritmos.</p>
+      <p class="hint">Arrastra sobre la barra para moverte por la canción. Las pistas que suenan se iluminan (verde = en el PC, lila = al teclado MIDI).<br>Cada pista usa su instrumento General MIDI (muestras reales); la percusión se aproxima con una caja de ritmos.</p>
 
       <div class="midi-out">
         <button id="midi-connect" type="button" class="btn ghost">Enviar a teclado MIDI…</button>
@@ -73,7 +73,7 @@
           <button id="zip" type="button" class="btn ghost">⬇ Pistas (.zip)</button>
         </div>
       </div>
-      <p class="hint" style="margin-top:0">Clic en el nombre para renombrar · <strong>S</strong> escucha solo esa pista · <strong>MUTE</strong> la silencia · <strong>MIDI combinado</strong> descarga un solo <code>.mid</code> sin las pistas silenciadas y con los nombres nuevos.</p>
+      <p class="hint" style="margin-top:0">Clic en el nombre para renombrar · <strong>S</strong> escucha solo esa pista (en el PC) · <strong>MUTE</strong> la silencia · <strong>EXT</strong> la envía solo al teclado MIDI y deja de sonar en el PC · <strong>MIDI combinado</strong> descarga un solo <code>.mid</code> sin las pistas silenciadas.</p>
       <ul id="track-list"></ul>
     </section>
 

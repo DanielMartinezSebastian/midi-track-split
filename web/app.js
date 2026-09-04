@@ -113,8 +113,13 @@ function buildPlayer(arrayBuffer) {
       const entry = { notes, muted: false, gain, spec, inst: null, part: null };
 
       entry.part = new Tone.Part((time, note) => {
-        // Sintetizador interno (el gain de la pista aplica mute/solo).
-        if (entry.inst && !state.internalMuted) {
+        if (routedToExt(entry)) {
+          // Esta pista va sólo al teclado externo.
+          const t = domTimeFromTone(time);
+          midiOut.noteOn(note.midi, note.velocity, t);
+          midiOut.noteOff(note.midi, t + Math.max(0.03, note.duration) * 1000);
+        } else if (entry.inst && !state.internalMuted) {
+          // Sintetizador interno (el gain de la pista aplica mute/solo).
           if (entry.spec.type === 'drum') {
             entry.inst.start({ note: drumSample(note.midi), time, velocity: note.velocity });
           } else {
@@ -122,12 +127,6 @@ function buildPlayer(arrayBuffer) {
               note: note.midi, time, duration: note.duration, velocity: note.velocity,
             });
           }
-        }
-        // Dispositivo MIDI externo (solo las pistas que suenan).
-        if (midiOut.enabled && isAudible(entry)) {
-          const t = domTimeFromTone(time);
-          midiOut.noteOn(note.midi, note.velocity, t);
-          midiOut.noteOff(note.midi, t + Math.max(0.03, note.duration) * 1000);
         }
       }, notes).start(0);
 
@@ -267,44 +266,63 @@ function updateClock() {
   highlightActive(cur);
 }
 
-// Ilumina las pistas que tienen alguna nota sonando en el instante `cur`.
+// Ilumina las pistas según lo que suena: verde = en el PC, lila = al teclado MIDI.
 function highlightActive(cur) {
   const playing = Tone.getTransport().state === 'started';
   state.parts.forEach((p, i) => {
     const row = state.rows[i];
     if (!row) return;
     // Ventana mínima de 180 ms para que la percusión (notas muy cortas) parpadee visible.
-    const active =
-      playing &&
-      isAudible(p) &&
-      p.notes.some((n) => n.time <= cur && cur < n.time + Math.max(n.duration, 0.18));
-    row.classList.toggle('playing', active);
+    const hasNote = p.notes.some(
+      (n) => n.time <= cur && cur < n.time + Math.max(n.duration, 0.18)
+    );
+    row.classList.toggle('playing', playing && isAudiblePC(p) && hasNote);
+    row.classList.toggle('playing-ext', playing && routedToExt(p) && hasNote);
   });
 }
 
-// ---------- silenciar / solo ----------
+// ---------- silenciar / solo / salida por pista ----------
 
-const anySolo = () => state.parts.some((p) => p.solo);
-const isAudible = (p) => !p.muted && (!anySolo() || p.solo);
+// Una pista suena por el teclado externo (y deja de sonar en el PC).
+const routedToExt = (p) => !!p.toExternal && midiOut.enabled;
+// El solo sólo cuenta pistas que se oyen por el PC.
+const anySoloPC = () => state.parts.some((p) => p.solo && !routedToExt(p));
+const isAudiblePC = (p) =>
+  !routedToExt(p) && !p.muted && (!anySoloPC() || p.solo);
 
-// Recalcula qué pistas suenan según mute + solo y refresca la interfaz.
+// Recalcula qué pistas suenan (PC + externo) y refresca la interfaz.
 function applyAudio() {
-  const solo = anySolo();
+  const solo = anySoloPC();
   state.parts.forEach((p, i) => {
-    const audible = !p.muted && (!solo || p.solo);
+    const routed = routedToExt(p);
+    const audible = !routed && !p.muted && (!solo || p.solo);
     p.gain.gain.value = audible ? 1 : 0;
     if (!audible) { try { p.inst?.stop(); } catch {} }
+
     if (p.soloBtn) {
-      p.soloBtn.classList.toggle('is-solo', !!p.solo);
-      p.soloBtn.setAttribute('aria-pressed', String(!!p.solo));
+      p.soloBtn.classList.toggle('is-solo', !!p.solo && !routed);
+      p.soloBtn.disabled = routed;
+      p.soloBtn.setAttribute('aria-pressed', String(!!p.solo && !routed));
     }
-    state.rows[i]?.classList.toggle('dimmed', solo && !p.solo && !p.muted);
+    if (p.muteBtn) p.muteBtn.disabled = routed;
+    if (p.extBtn) {
+      p.extBtn.classList.toggle('is-ext', !!p.toExternal);
+      p.extBtn.disabled = !midiOut.enabled;
+      p.extBtn.setAttribute('aria-pressed', String(!!p.toExternal));
+    }
+
+    const row = state.rows[i];
+    if (row) {
+      row.classList.toggle('routed', routed);
+      row.classList.toggle('dimmed', solo && !p.solo && !p.muted && !routed);
+    }
   });
+  updateMidiStatus();
 }
 
 function setSolo(i, solo) {
   const p = state.parts[i];
-  if (!p) return;
+  if (!p || routedToExt(p)) return;
   p.solo = solo;
   applyAudio();
 }
@@ -313,6 +331,31 @@ function clearAllSolo() {
   let changed = false;
   for (const p of state.parts) if (p.solo) { p.solo = false; changed = true; }
   if (changed) applyAudio();
+}
+
+// Enruta / desenruta la pista i hacia el teclado MIDI externo.
+function setExternal(i, on) {
+  const p = state.parts[i];
+  if (!p) return;
+  if (on && !midiOut.enabled) return;
+  p.toExternal = on;
+  if (on) {
+    p.solo = false;
+    p.muted = false;
+    applyMuteUi(i, false);
+    try { p.inst?.stop(); } catch {}
+  } else {
+    midiOut.panic(); // corta notas que hubieran quedado sonando en el teclado
+  }
+  applyAudio();
+  updateMergeButton();
+}
+
+// ¿Alguna pista enruta al teclado? (para el texto de estado)
+function extTrackNames() {
+  return state.parts
+    .map((p, i) => (p.toExternal ? state.tracks[i]?.name : null))
+    .filter(Boolean);
 }
 
 // ---------- desplazar el punto de reproducción ----------
@@ -433,6 +476,17 @@ function renderTracks() {
     if (part) part.muteBtn = muteBtn;
     applyMuteUi(i, part?.muted || false);
 
+    const extBtn = document.createElement('button');
+    extBtn.type = 'button';
+    extBtn.className = 'btn ghost ext-btn';
+    extBtn.textContent = 'EXT';
+    extBtn.title = 'Enviar solo esta pista al teclado MIDI (deja de sonar en el PC)';
+    extBtn.setAttribute('aria-label', extBtn.title);
+    extBtn.setAttribute('aria-pressed', 'false');
+    extBtn.disabled = !midiOut.enabled;
+    extBtn.addEventListener('click', () => setExternal(i, !state.parts[i]?.toExternal));
+    if (part) part.extBtn = extBtn;
+
     const locate = document.createElement('button');
     locate.type = 'button';
     locate.className = 'btn ghost locate';
@@ -450,7 +504,7 @@ function renderTracks() {
       download(exportBytes(t, name), `${name}.mid`);
     });
 
-    li.append(info, spacer, soloBtn, muteBtn, locate, dl);
+    li.append(info, spacer, soloBtn, muteBtn, extBtn, locate, dl);
     list.append(li);
   });
 
@@ -506,8 +560,8 @@ async function playFromTrack(i) {
   const p = state.parts[i];
   if (!p) return;
 
-  if (p.muted) setMuted(i, false);
-  if (anySolo() && !p.solo) clearAllSolo();
+  if (!p.toExternal && p.muted) setMuted(i, false);
+  if (anySoloPC() && !p.solo) clearAllSolo();
 
   await Tone.start();
   await ensureInstruments();
@@ -615,6 +669,40 @@ initMidiOut();
 
 // ---------- salida MIDI externa ----------
 
+let midiLastInputs = 0;
+
+// Texto de estado del panel MIDI (lo llama initMidiOut y applyAudio).
+function updateMidiStatus() {
+  const status = $('midi-status');
+  if (!status || status.dataset.locked === '1') return; // no pisar un error mostrado
+  if (!midiOut.access) { status.textContent = ''; return; } // aún sin conectar
+
+  if (midiOut.enabled) {
+    const name = $('midi-device').selectedOptions[0]?.textContent || 'dispositivo';
+    const ch = $('midi-channel').value;
+    const routed = extTrackNames();
+    status.textContent =
+      `Teclado “${name}” · canal ${ch} — ` +
+      (routed.length
+        ? `enviando: ${routed.join(', ')}`
+        : 'pulsa EXT en una pista para enviarla');
+    return;
+  }
+  if (midiOut.outputs().length > 0) {
+    status.textContent = 'Elige un dispositivo de salida en la lista.';
+  } else if (midiLastInputs > 0) {
+    status.textContent =
+      'Se detectan entradas MIDI pero ninguna salida. Tu aparato parece un ' +
+      'controlador (solo envía notas): para oírlo hace falta un dispositivo con ' +
+      'generador de sonido, o un puerto virtual tipo loopMIDI hacia un DAW.';
+  } else {
+    status.textContent =
+      'MIDI activado, pero no se detecta ningún dispositivo. Prueba a: reconectar ' +
+      'el aparato, cerrar otras apps que lo estén usando y reiniciar el navegador; ' +
+      'luego pulsa «Buscar de nuevo».';
+  }
+}
+
 function initMidiOut() {
   const connectBtn = $('midi-connect');
   const controls = $('midi-controls');
@@ -632,34 +720,9 @@ function initMidiOut() {
   }
   channelSel.value = '1';
 
-  let lastInputs = 0;
-
-  function updateStatus() {
-    if (midiOut.enabled) {
-      const name = deviceSel.selectedOptions[0]?.textContent || 'dispositivo';
-      status.textContent = `Enviando notas a “${name}” · canal ${channelSel.value}`;
-      return;
-    }
-    const outs = midiOut.outputs().length;
-    if (outs > 0) {
-      status.textContent = 'Elige un dispositivo de salida en la lista.';
-    } else if (lastInputs > 0) {
-      status.textContent =
-        'Se detectan entradas MIDI pero ninguna salida. Tu aparato parece un ' +
-        'controlador (solo envía notas): para oírlo hace falta un dispositivo con ' +
-        'generador de sonido, o un puerto/instrumento de salida (p. ej. un módulo, ' +
-        'un teclado con sonidos, o un puerto virtual tipo loopMIDI hacia un DAW).';
-    } else {
-      status.textContent =
-        'MIDI activado, pero no se detecta ningún dispositivo. Prueba a: reconectar ' +
-        'el aparato, cerrar otras apps que lo estén usando y reiniciar el navegador; ' +
-        'luego pulsa «Buscar de nuevo».';
-    }
-  }
-
   function refreshDevices(diag) {
     const d = diag || midiOut.diagnostics();
-    lastInputs = d.inputs.length;
+    midiLastInputs = d.inputs.length;
     const current = deviceSel.value;
     deviceSel.innerHTML = '<option value="">— ninguno —</option>';
     for (const o of d.outputs) {
@@ -674,12 +737,13 @@ function initMidiOut() {
       deviceSel.value = '';
       midiOut.select(null);
     }
-    updateStatus();
+    applyAudio(); // reevalúa el enrutado por si cambió el dispositivo
   }
 
   if (!midiOut.supported) {
     connectBtn.disabled = true;
     connectBtn.textContent = 'Teclado MIDI no disponible';
+    status.dataset.locked = '1';
     status.innerHTML = midiOut.secureContext
       ? 'Este navegador no soporta Web MIDI. Usa Chrome, Edge u Opera (en Brave, actívalo en <code>brave://settings/content/midi</code>).'
       : 'Web MIDI solo funciona en conexión segura, y estás entrando por <code>http://</code> + IP. Opciones:<br>' +
@@ -696,9 +760,11 @@ function initMidiOut() {
       midiOut.onchange = (d) => refreshDevices(d);
       connectBtn.hidden = true;
       controls.hidden = false;
+      delete status.dataset.locked;
       refreshDevices(diag);
     } catch (err) {
       connectBtn.disabled = false;
+      status.dataset.locked = '1';
       status.textContent = /permission|not granted|denied|security/i.test(err.message || '')
         ? 'No se concedió permiso para usar MIDI. Permítelo en el icono de ajustes junto a la URL (o en chrome://settings/content/midi) y vuelve a pulsar el botón.'
         : (err.message || 'No se pudo acceder a los dispositivos MIDI.');
@@ -709,11 +775,11 @@ function initMidiOut() {
 
   deviceSel.addEventListener('change', () => {
     midiOut.select(deviceSel.value || null);
-    updateStatus();
+    applyAudio();
   });
   channelSel.addEventListener('change', () => {
     midiOut.setChannel(+channelSel.value);
-    updateStatus();
+    updateMidiStatus();
   });
   internalChk.addEventListener('change', () => {
     state.internalMuted = internalChk.checked;
