@@ -356,5 +356,7 @@ code {
   .tname-input { grid-column: 1; max-width: 100%; }
   .tmeta { grid-column: 1 / -1; margin-top: 0; }
   .dl-btn { grid-column: 2; grid-row: 1; }
-  .tctrl { grid-column: 1 / -1; flex-wrap: wrap; }
+  /* Controles centrados; el botón ▶ (locate) absorbe el espacio libre. */
+  .tctrl { grid-column: 1 / -1; justify-content: center; }
+  .tctrl > .btn.locate { flex: 1 1 auto; }
 }
