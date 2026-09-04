@@ -118,22 +118,32 @@ h1 {
 /* ---------- Zona de carga ---------- */
 
 .drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   border: 3px dashed var(--ink);
   background: var(--card);
   padding: 34px 20px;
   text-align: center;
+  transition: background .15s ease;
 }
 .drop.over { background: var(--mint); }
-.drop p { margin: 6px 0; font-weight: 500; }
+.drop.loaded { background: var(--yellow); padding: 22px 20px; }
+.drop p { margin: 0; font-weight: 500; }
 .drop p strong { font-family: var(--display); font-weight: 700; text-transform: uppercase; }
 
+/* alterna el texto según haya archivo o no */
+.drop-hint--more { display: none; }
+.drop.loaded .drop-hint--empty { display: none; }
+.drop.loaded .drop-hint--more { display: block; }
+.drop.loaded .drop-or { display: none; }
+
 .filename {
-  display: inline-block;
-  margin-top: 4px;
-  font-weight: 700;
-  background: var(--yellow);
-  border: 2px solid var(--ink);
-  padding: 2px 8px;
+  margin: 0;
+  font: 800 clamp(1.05rem, 3.6vw, 1.45rem)/1.2 var(--display);
+  color: var(--ink);
+  word-break: break-word;
 }
 .filename:empty { display: none; }
 

@@ -27,13 +27,14 @@
     </header>
 
     <div id="drop" class="drop">
-      <p><strong>Arrastra un archivo .mid aquí</strong></p>
-      <p>o</p>
+      <p id="filename" class="filename"></p>
+      <p class="drop-hint drop-hint--empty"><strong>Arrastra un archivo .mid aquí</strong></p>
+      <p class="drop-hint drop-hint--more">Arrastra otro archivo, o</p>
+      <p class="drop-or">o</p>
       <label class="btn">
         Elegir archivo
         <input id="file" type="file" accept=".mid,.midi,audio/midi" hidden />
       </label>
-      <p id="filename" class="filename"></p>
     </div>
 
     <section id="player" class="card" hidden>

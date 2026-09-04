@@ -61,12 +61,13 @@ async function handleFile(file) {
   stopPlayback();
   disposeParts();
   setStatus('');
+  drop.classList.remove('loaded');
+  $('filename').textContent = '';
 
   const buf = await file.arrayBuffer();
   const bytes = new Uint8Array(buf);
   state.originalBytes = bytes.slice(); // copia para reconstruir el .mid combinado
   state.stem = file.name.replace(/\.(mid|midi)$/i, '') || 'pistas';
-  $('filename').textContent = file.name;
 
   try {
     state.tracks = splitMidi(bytes, { includeEmpty: false });
@@ -79,6 +80,8 @@ async function handleFile(file) {
     return;
   }
 
+  $('filename').textContent = file.name;
+  drop.classList.add('loaded');
   buildPlayer(buf);
   renderTracks();
 }
