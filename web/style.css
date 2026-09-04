@@ -310,8 +310,10 @@ code {
   margin-top: 3px;
 }
 .spacer { flex: 1; }
+.tctrl { display: flex; gap: 10px; flex: none; }
 
-#track-list li > .btn { flex: none; }
+#track-list li > .btn,
+.tctrl > .btn { flex: none; }
 .btn.locate,
 .btn.mute-btn,
 .btn.solo-btn,
@@ -341,8 +343,18 @@ code {
 }
 
 @media (max-width: 620px) {
-  #track-list li { flex-wrap: wrap; }
-  .tinfo { flex-basis: 100%; }
-  .tname-input { max-width: 100%; }
+  /* Móvil: nombre + descarga arriba, controles en una fila propia debajo. */
+  #track-list li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+    row-gap: 10px;
+    align-items: center;
+  }
   #track-list li .spacer { display: none; }
+  .tinfo { display: contents; }
+  .tname-input { grid-column: 1; max-width: 100%; }
+  .tmeta { grid-column: 1 / -1; margin-top: 0; }
+  .dl-btn { grid-column: 2; grid-row: 1; }
+  .tctrl { grid-column: 1 / -1; flex-wrap: wrap; }
 }

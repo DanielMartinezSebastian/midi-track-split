@@ -497,14 +497,18 @@ function renderTracks() {
 
     const dl = document.createElement('button');
     dl.type = 'button';
-    dl.className = 'btn ghost';
+    dl.className = 'btn ghost dl-btn';
     dl.textContent = '⬇ .mid';
     dl.addEventListener('click', () => {
       const name = sanitizeName(t.name, `pista-${i + 1}`);
       download(exportBytes(t, name), `${name}.mid`);
     });
 
-    li.append(info, spacer, soloBtn, muteBtn, extBtn, locate, dl);
+    const ctrl = document.createElement('div');
+    ctrl.className = 'tctrl';
+    ctrl.append(soloBtn, muteBtn, extBtn, locate);
+
+    li.append(info, spacer, ctrl, dl);
     list.append(li);
   });
 
