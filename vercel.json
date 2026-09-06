@@ -1,3 +1,6 @@
 {
+  "framework": null,
+  "buildCommand": null,
+  "installCommand": null,
   "outputDirectory": "web"
 }
