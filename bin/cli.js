@@ -2,7 +2,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { basename, extname, join, resolve } from 'node:path';
 import JSZip from 'jszip';
-import { splitMidi } from '../src/split-core.js';
+import { splitMidi } from '../web/split-core.js';
 
 const HELP = `midi-track-split — separa un archivo MIDI en pistas individuales
 

@@ -130,10 +130,10 @@ que se usa y el navegador lo cachea. Con `--all` la reproducción es 100% offlin
 ## Estructura
 
 ```
-src/split-core.js   Lógica de separación (compartida por CLI y web)
 bin/cli.js          Entrada de la CLI
 server.js           Servidor estático (HTTP, o HTTPS autofirmado con --https)
 web/                Interfaz (HTML + CSS + JS)
+web/split-core.js   Lógica de separación (compartida por CLI y web)
 web/gm.js           Tablas General MIDI (instrumentos y mapa de percusión)
 web/midiout.js      Envío a dispositivo MIDI externo (Web MIDI API)
 web/sounds.js       Resuelve muestras locales (web/soundfonts/) o CDN

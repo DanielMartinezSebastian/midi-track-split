@@ -75,11 +75,8 @@ async function handler(req, res) {
   try {
     const urlPath = decodeURIComponent(req.url.split('?')[0]);
     const rel = normalize(urlPath === '/' ? '/index.html' : urlPath).replace(/^(\.\.[/\\])+/, '');
-    // El núcleo compartido vive en /src; el resto se sirve desde /web.
-    const isShared = rel.replace(/\\/g, '/').startsWith('/src/');
-    const dir = isShared ? BASE : ROOT;
-    const filePath = join(dir, rel);
-    if (!filePath.startsWith(dir)) {
+    const filePath = join(ROOT, rel);
+    if (!filePath.startsWith(ROOT)) {
       res.writeHead(403).end('Forbidden');
       return;
     }

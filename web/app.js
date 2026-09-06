@@ -2,7 +2,7 @@ import JSZip from 'jszip';
 import * as Tone from 'tone';
 import { Midi } from '@tonejs/midi';
 import { Soundfont, DrumMachine } from 'smplr';
-import { splitMidi, sanitizeName, renameTrack, mergeMidi } from '../src/split-core.js';
+import { splitMidi, sanitizeName, renameTrack, mergeMidi } from './split-core.js';
 import { gmInstrument, drumSample } from './gm.js';
 import { MidiOut } from './midiout.js';
 import {
