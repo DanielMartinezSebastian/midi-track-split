@@ -44,7 +44,7 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/es",
+      "source": "/es/",
       "destination": "/",
       "permanent": true
     }
