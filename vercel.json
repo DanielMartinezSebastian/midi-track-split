@@ -41,5 +41,12 @@
       ]
     }
   ],
-  "trailingSlash": true
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/es",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
 }

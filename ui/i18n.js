@@ -263,11 +263,11 @@ const de = {
   'midi.denied': 'Die Berechtigung für MIDI wurde nicht erteilt. Erlaube sie über das Einstellungssymbol neben der URL (oder unter chrome://settings/content/midi) und drücke den Button erneut.',
   'midi.failed': 'Auf die MIDI-Geräte konnte nicht zugegriffen werden.',
 
-  'sound.label': 'Klangbänke',
+  'sound.label': 'Soundbanks',
   'sound.statement': 'Wähle, womit es klingt.',
   'sound.drums': 'Schlagzeug',
   'sound.others': 'Andere Instrumente',
-  'sound.hint': 'Jede Spur nutzt ihr General-MIDI-Instrument mit echten Samples; das Schlagzeug wird mit einer Drum Machine angenähert.',
+  'sound.hint': 'Jede Spur nutzt ihr General-MIDI-Instrument mit echten Samples; das Schlagzeug wird mit einem Drumcomputer angenähert.',
   'sound.local': '(lokal)',
 
   'dock.position': 'Wiedergabeposition',

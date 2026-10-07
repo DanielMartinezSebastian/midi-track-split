@@ -60,7 +60,7 @@ export const PAGES = [
       ['¿Las pistas separadas suenan igual que el original?', 'Sí. Cada pista conserva el tempo, el compás y la tonalidad de la canción, así que suena igual que dentro del archivo original.'],
     ],
     moreTitle: 'Más sobre el proyecto',
-    more: `También hay una versión de línea de comandos para separar pistas MIDI desde la terminal. El código está en <a href="${REPO}" rel="noopener">GitHub</a> y la historia del proyecto en su <a href="${PROJECT_URL}">ficha en martinezsebastian.com</a>.`,
+    more: `También hay una versión de línea de comandos para separar pistas MIDI desde la terminal. El código está en <a href="${REPO}" rel="noopener">GitHub</a> y la historia del proyecto en su <a href="${PROJECT_URL}">ficha en martinezsebastian.com</a>. La herramienta también está disponible en <a href="/en/" hreflang="en">inglés</a> y en <a href="/de/" hreflang="de">alemán</a>.`,
     foot: { by: 'Hecho por', license: 'Licencia MIT', updated: 'Actualizado en', date: 'octubre de 2026', langs: 'Idiomas' },
     noscript: 'La herramienta necesita JavaScript para cargar, reproducir y separar el archivo MIDI.',
     requirements: 'Requiere JavaScript. La salida a teclado MIDI necesita Web MIDI (Chrome, Edge u Opera).',
@@ -72,7 +72,7 @@ export const PAGES = [
     path: '/en/',
     name: 'English',
     title: 'Split MIDI Tracks Online · MIDI Track Split',
-    desc: 'Split MIDI tracks online for free: separate a MIDI file into individual tracks, listen with an online MIDI player and 3D visualizer, and download them. No upload.',
+    desc: 'Split MIDI tracks online for free: separate a MIDI file into individual tracks, listen with an online MIDI player and 3D visualizer, then download. No upload.',
     label: 'What it is',
     h1: 'Split MIDI tracks online',
     lead: 'MIDI Track Split is a free tool to <strong>split a MIDI file into separate tracks</strong> right in your browser. Load a <code>.mid</code> and it gives you one track per instrument, which you can play together or on their own and then download. Nothing to install and no account needed.',
@@ -121,7 +121,7 @@ export const PAGES = [
       ['Do the separated tracks sound like the original?', 'Yes. Each track keeps the tempo, time signature and key of the song, so it sounds the same as inside the original file.'],
     ],
     moreTitle: 'More about the project',
-    more: `There is also a command-line version to split MIDI tracks from the terminal. The code is on <a href="${REPO}" rel="noopener">GitHub</a> and the story of the project is on its <a href="${PROJECT_URL}">page at martinezsebastian.com</a> (in Spanish).`,
+    more: `There is also a command-line version to split MIDI tracks from the terminal. The code is on <a href="${REPO}" rel="noopener">GitHub</a> and the story of the project is on its <a href="${PROJECT_URL}">page at martinezsebastian.com</a> (in Spanish). The tool is also available in <a href="/" hreflang="es">Spanish</a> and <a href="/de/" hreflang="de">German</a>.`,
     foot: { by: 'Made by', license: 'MIT license', updated: 'Updated', date: 'October 2026', langs: 'Languages' },
     noscript: 'The tool needs JavaScript to load, play and split the MIDI file.',
     requirements: 'Requires JavaScript. Output to a MIDI keyboard needs Web MIDI (Chrome, Edge or Opera).',
@@ -134,14 +134,14 @@ export const PAGES = [
     name: 'Deutsch',
     title: 'MIDI-Spuren trennen online · MIDI Track Split',
     desc: 'MIDI-Spuren online trennen, kostenlos: MIDI-Datei in einzelne Spuren aufteilen, mit MIDI Player online und 3D-Visualizer anhören und herunterladen. Ohne Upload.',
-    label: 'Was es ist',
+    label: 'Worum es geht',
     h1: 'MIDI-Spuren trennen – online',
-    lead: 'MIDI Track Split ist ein kostenloses Tool, mit dem du <strong>die Spuren einer MIDI-Datei trennen</strong> kannst – direkt im Browser. Du lädst eine <code>.mid</code>-Datei (MIDI file), bekommst eine Spur pro Instrument, kannst sie zusammen oder einzeln anhören und herunterladen. Keine Installation, kein Konto.',
+    lead: 'MIDI Track Split ist ein kostenloses Tool, mit dem du <strong>MIDI-Spuren trennen</strong> kannst – direkt im Browser. Du lädst eine <code>.mid</code>-Datei (MIDI file), bekommst eine Spur pro Instrument, kannst sie zusammen oder einzeln anhören und herunterladen. Keine Installation, kein Konto.',
     sections: [
       {
         h2: 'So teilst du eine MIDI-Datei in Spuren auf',
         html: `<ol>
-        <li><strong>Datei laden.</strong> Drücke „.mid-Datei wählen“ oder ziehe sie ins Fenster. Unterstützt werden <code>.mid</code> und <code>.midi</code>.</li>
+        <li><strong>Datei laden.</strong> Klicke auf „.mid-Datei wählen“ oder ziehe sie ins Fenster. Unterstützt werden <code>.mid</code> und <code>.midi</code>.</li>
         <li><strong>Anhören und anpassen.</strong> Jede Spur erscheint mit ihrem Instrument. Du kannst sie umbenennen, stummschalten, solo hören oder die Wiedergabe bei ihrer ersten Note starten.</li>
         <li><strong>Herunterladen.</strong> Speichere jede Spur als eigene <code>.mid</code>, alle zusammen als <code>.zip</code> oder eine einzige MIDI-Datei ohne die stummgeschalteten Spuren.</li>
       </ol>
@@ -149,8 +149,8 @@ export const PAGES = [
       },
       {
         h2: 'MIDI Player online',
-        html: `<p>Das Tool ist zugleich ein <strong>MIDI Player online</strong>: Du kannst eine MIDI-Datei abspielen, ohne etwas zu installieren. Jede Spur nutzt ihr General-MIDI-Instrument mit echten Samples; Klangbank und Drum Machine lassen sich wechseln.</p>
-      <p>Der Player bietet Solo und Mute pro Spur, eine Loop-Funktion und eine Positionsleiste. Außerdem kann er bei der ersten Note einer beliebigen Spur starten – praktisch, um den Einsatz eines Instruments zu finden.</p>`,
+        html: `<p>Das Tool ist zugleich ein <strong>Online-MIDI-Player</strong>: Du kannst eine MIDI-Datei abspielen, ohne etwas zu installieren. Jede Spur nutzt ihr General-MIDI-Instrument mit echten Samples; Soundbank und Drumcomputer lassen sich wechseln.</p>
+      <p>Der Player bietet Solo und Mute pro Spur, eine Loop-Funktion und eine Fortschrittsleiste. Außerdem kann er bei der ersten Note einer beliebigen Spur starten – praktisch, um den Einsatz eines Instruments zu finden.</p>`,
       },
       {
         h2: 'MIDI Visualizer online, in 3D',
@@ -177,11 +177,11 @@ export const PAGES = [
       ['Wird meine MIDI-Datei auf einen Server hochgeladen?', 'Nein. Die Datei wird in deinem Browser gelesen und aufgeteilt und nie an einen Server gesendet. Aus dem Internet geladen werden nur die Klang-Samples der Instrumente.'],
       ['Ist das kostenlos?', 'Ja. MIDI Track Split ist kostenlos, ohne Anmeldung und Open Source unter der MIT-Lizenz.'],
       ['Welche Dateien werden unterstützt und was kann ich herunterladen?', 'Unterstützt werden .mid- und .midi-Dateien. Du kannst jede Spur als eigene .mid herunterladen, alle zusammen als .zip oder eine einzige MIDI-Datei ohne die stummgeschalteten Spuren und mit den geänderten Namen.'],
-      ['Funktioniert es auf dem Handy?', 'Ja. Die Oberfläche ist für Smartphone und Tablet gemacht. Die Ausgabe an ein externes MIDI-Keyboard braucht einen Browser mit Web MIDI (Chrome, Edge oder Opera) und ist auf iPhone und iPad nicht verfügbar.'],
+      ['Funktioniert es auf dem Handy?', 'Ja. Die Oberfläche ist für Smartphone und Tablet ausgelegt. Die Ausgabe an ein externes MIDI-Keyboard braucht einen Browser mit Web MIDI (Chrome, Edge oder Opera) und ist auf iPhone und iPad nicht verfügbar.'],
       ['Klingen die getrennten Spuren wie das Original?', 'Ja. Jede Spur behält Tempo, Taktart und Tonart des Songs und klingt daher wie in der Originaldatei.'],
     ],
     moreTitle: 'Mehr zum Projekt',
-    more: `Es gibt auch eine Kommandozeilen-Version, um MIDI-Spuren im Terminal zu trennen. Der Code liegt auf <a href="${REPO}" rel="noopener">GitHub</a>, die Geschichte des Projekts steht auf der <a href="${PROJECT_URL}">Projektseite bei martinezsebastian.com</a> (auf Spanisch).`,
+    more: `Es gibt auch eine Kommandozeilen-Version, um MIDI-Spuren im Terminal zu trennen. Der Code liegt auf <a href="${REPO}" rel="noopener">GitHub</a>, die Geschichte des Projekts steht auf der <a href="${PROJECT_URL}">Projektseite bei martinezsebastian.com</a> (auf Spanisch). Das Tool gibt es auch auf <a href="/" hreflang="es">Spanisch</a> und <a href="/en/" hreflang="en">Englisch</a>.`,
     foot: { by: 'Von', license: 'MIT-Lizenz', updated: 'Aktualisiert im', date: 'Oktober 2026', langs: 'Sprachen' },
     noscript: 'Das Tool braucht JavaScript, um die MIDI-Datei zu laden, abzuspielen und aufzuteilen.',
     requirements: 'Benötigt JavaScript. Die Ausgabe an ein MIDI-Keyboard braucht Web MIDI (Chrome, Edge oder Opera).',
