@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MIDI Track Split</title>
-  <meta name="description" content="Separa un archivo MIDI en pistas individuales, escúchalo con visuales 3D y descárgalas. Todo ocurre en tu navegador." />
+  <title>Separar pistas MIDI online · MIDI Track Split</title>
+  <meta name="description" content="Separar pistas MIDI online y gratis: divide un archivo MIDI en pistas individuales, escúchalas con reproductor y visualizador 3D y descárgalas. Sin subir nada." />
   <meta name="author" content="Daniel Martínez Sebastián" />
   <link rel="canonical" href="https://miditracksplit.martinezsebastian.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="MIDI Track Split" />
-  <meta property="og:title" content="MIDI Track Split · por Daniel Martínez Sebastián" />
-  <meta property="og:description" content="Separa un archivo MIDI en pistas individuales, escúchalo con visuales 3D y descárgalas. Todo ocurre en tu navegador." />
+  <meta property="og:title" content="Separar pistas MIDI online · MIDI Track Split" />
+  <meta property="og:description" content="Separar pistas MIDI online y gratis: divide un archivo MIDI en pistas individuales, escúchalas con reproductor y visualizador 3D y descárgalas. Sin subir nada." />
   <meta property="og:url" content="https://miditracksplit.martinezsebastian.com/" />
   <meta property="og:image" content="https://miditracksplit.martinezsebastian.com/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -18,12 +18,14 @@
   <meta property="og:image:alt" content="MIDI Track Split, por Daniel Martínez Sebastián" />
   <meta property="og:locale" content="es_ES" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="MIDI Track Split · por Daniel Martínez Sebastián" />
-  <meta name="twitter:description" content="Separa un archivo MIDI en pistas individuales, escúchalo con visuales 3D y descárgalas." />
+  <meta name="twitter:title" content="Separar pistas MIDI online · MIDI Track Split" />
+  <meta name="twitter:description" content="Separar pistas MIDI online y gratis: divide un archivo MIDI en pistas individuales, escúchalas con reproductor y visualizador 3D y descárgalas. Sin subir nada." />
   <meta name="twitter:image" content="https://miditracksplit.martinezsebastian.com/og.png" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="fonts/fonts.css" />
-  <link rel="stylesheet" href="app.css" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <link rel="stylesheet" href="/app.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://miditracksplit.martinezsebastian.com/#app","name":"MIDI Track Split","url":"https://miditracksplit.martinezsebastian.com/","description":"Separar pistas MIDI online y gratis: divide un archivo MIDI en pistas individuales, escúchalas con reproductor y visualizador 3D y descárgalas. Sin subir nada.","applicationCategory":"MultimediaApplication","operatingSystem":"Web","browserRequirements":"Requiere JavaScript. La salida a teclado MIDI necesita Web MIDI (Chrome, Edge u Opera).","inLanguage":"es","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"image":"https://miditracksplit.martinezsebastian.com/og.png","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/DanielMartinezSebastian/midi-track-split","dateModified":"2026-10-07","author":{"@type":"Person","name":"Daniel Martínez Sebastián","url":"https://www.martinezsebastian.com"}},{"@type":"FAQPage","@id":"https://miditracksplit.martinezsebastian.com/#faq","mainEntity":[{"@type":"Question","name":"¿Se sube mi archivo MIDI a algún servidor?","acceptedAnswer":{"@type":"Answer","text":"No. El archivo se lee y se separa en tu propio navegador; no se envía a ningún servidor. Lo único que se descarga de internet son las muestras de sonido de los instrumentos."}},{"@type":"Question","name":"¿Es gratis?","acceptedAnswer":{"@type":"Answer","text":"Sí. MIDI Track Split es gratuito, sin registro y de código abierto con licencia MIT."}},{"@type":"Question","name":"¿Qué archivos admite y qué descargo?","acceptedAnswer":{"@type":"Answer","text":"Admite archivos .mid y .midi. Puedes descargar cada pista como un .mid independiente, todas juntas en un .zip, o un único MIDI combinado sin las pistas que hayas silenciado y con los nombres que hayas cambiado."}},{"@type":"Question","name":"¿Funciona en el móvil?","acceptedAnswer":{"@type":"Answer","text":"Sí. La interfaz está pensada para móvil y tablet. La salida a un teclado MIDI externo necesita un navegador con Web MIDI (Chrome, Edge u Opera) y no está disponible en iPhone ni iPad."}},{"@type":"Question","name":"¿Las pistas separadas suenan igual que el original?","acceptedAnswer":{"@type":"Answer","text":"Sí. Cada pista conserva el tempo, el compás y la tonalidad de la canción, así que suena igual que dentro del archivo original."}}]}]}</script>
   <script type="importmap">
   {
     "imports": {
@@ -37,7 +39,84 @@
   </script>
 </head>
 <body>
+  <!-- La aplicación (React) se monta aquí. Lo de debajo es contenido estático: se lee sin JavaScript. -->
   <div id="root"></div>
-  <script type="module" src="app.js"></script>
+
+  <main class="info" id="info">
+    <p class="info__label">Qué es</p>
+    <h1>Separar pistas MIDI online</h1>
+    <p class="info__lead">
+      MIDI Track Split es una herramienta gratuita para <strong>separar las pistas de un archivo MIDI</strong>
+      directamente en el navegador. Cargas un <code>.mid</code>, lo divide en una pista por instrumento,
+      puedes escucharlas juntas o por separado y descargarlas. No hay que instalar nada ni crear una cuenta.
+    </p>
+
+    <section>
+      <h2>Cómo dividir un archivo MIDI en pistas</h2>
+      <ol>
+        <li><strong>Carga el archivo.</strong> Pulsa «Elegir archivo .mid» o arrástralo a la ventana. Se admiten <code>.mid</code> y <code>.midi</code>.</li>
+        <li><strong>Escucha y ajusta.</strong> Cada pista aparece con su instrumento. Puedes renombrarla, silenciarla, oírla en solitario o empezar a reproducir desde su primera nota.</li>
+        <li><strong>Descarga.</strong> Baja cada pista como un <code>.mid</code> independiente, todas en un <code>.zip</code>, o un único MIDI combinado sin las pistas silenciadas.</li>
+      </ol>
+      <p>Cada pista extraída conserva el tempo, el compás y la tonalidad de la canción, así que suena igual que dentro del original.</p>
+    </section>
+
+    <section>
+      <h2>Reproductor y visualizador MIDI online</h2>
+      <p>
+        Además de extraer pistas, funciona como <strong>reproductor MIDI online</strong>: cada pista suena con su
+        instrumento General MIDI usando muestras reales, y puedes cambiar el banco de sonidos y la caja de ritmos.
+      </p>
+      <p>
+        El fondo es un <strong>visualizador MIDI</strong> en 3D. La batería es el núcleo y cada pista un anillo que
+        dibuja su forma de onda y se ilumina con sus notas. Solo se ven las pistas activas, y el botón de pantalla
+        completa deja únicamente las visuales.
+      </p>
+    </section>
+
+    <section>
+      <h2>Enviar una pista a un teclado o sintetizador MIDI</h2>
+      <p>
+        Con un dispositivo MIDI conectado puedes mandar cualquier pista a tu teclado o sintetizador y dejar el resto
+        sonando en el equipo. Usa la API Web MIDI, disponible en Chrome, Edge y Opera.
+      </p>
+    </section>
+
+    <section>
+      <h2>Preguntas frecuentes</h2>
+      <h3>¿Se sube mi archivo MIDI a algún servidor?</h3>
+      <p>No. El archivo se lee y se separa en tu propio navegador; no se envía a ningún servidor. Lo único que se descarga de internet son las muestras de sonido de los instrumentos.</p>
+      <h3>¿Es gratis?</h3>
+      <p>Sí. MIDI Track Split es gratuito, sin registro y de código abierto con licencia MIT.</p>
+      <h3>¿Qué archivos admite y qué descargo?</h3>
+      <p>Admite archivos .mid y .midi. Puedes descargar cada pista como un .mid independiente, todas juntas en un .zip, o un único MIDI combinado sin las pistas que hayas silenciado y con los nombres que hayas cambiado.</p>
+      <h3>¿Funciona en el móvil?</h3>
+      <p>Sí. La interfaz está pensada para móvil y tablet. La salida a un teclado MIDI externo necesita un navegador con Web MIDI (Chrome, Edge u Opera) y no está disponible en iPhone ni iPad.</p>
+      <h3>¿Las pistas separadas suenan igual que el original?</h3>
+      <p>Sí. Cada pista conserva el tempo, el compás y la tonalidad de la canción, así que suena igual que dentro del archivo original.</p>
+    </section>
+
+    <section>
+      <h2>Más sobre el proyecto</h2>
+      <p>
+        También hay una versión de línea de comandos para separar pistas MIDI desde la terminal. El código está en
+        <a href="https://github.com/DanielMartinezSebastian/midi-track-split" rel="noopener">GitHub</a> y la historia del
+        proyecto en su
+        <a href="https://www.martinezsebastian.com/herramientas/midi-track-split">ficha en martinezsebastian.com</a>.
+      </p>
+    </section>
+  </main>
+
+  <footer class="info-foot">
+    <strong>MIDI Track Split</strong>
+    <p>
+      Hecho por <a href="https://www.martinezsebastian.com" rel="author">Daniel Martínez Sebastián</a> · Licencia MIT ·
+      Actualizado en <time datetime="2026-10-07">octubre de 2026</time>
+    </p>
+    <a class="info-foot__site" href="https://www.martinezsebastian.com/herramientas/midi-track-split">martinezsebastian.com ↗</a>
+  </footer>
+
+  <noscript><p class="info-noscript">La herramienta necesita JavaScript para cargar, reproducir y separar el archivo MIDI.</p></noscript>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>

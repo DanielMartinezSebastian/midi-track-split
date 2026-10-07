@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { toast } from 'sonner';
 import Button from 'trama-ui/Button';
-import Footer from 'trama-ui/Footer';
 import Marquee from 'trama-ui/Marquee';
 import NavBar from 'trama-ui/NavBar';
 import Select from 'trama-ui/Select';
@@ -117,13 +116,13 @@ export default function App() {
         {/* ---------- portada: el archivo ---------- */}
         <section className="mts__hero">
           <p className="mts__label">{s.loaded ? 'Archivo · toca el nombre para cambiar el fondo' : 'Separador de pistas MIDI'}</p>
-          <h1 className="mts__name" style={{ '--len': Math.max(title.length, 4) }}>
+          <p className="mts__name" style={{ '--len': Math.max(title.length, 4) }}>
             {s.loaded ? (
               <button type="button" className="mts__name-btn" aria-label={`${title}: cambiar el estilo del fondo`} onClick={nextLook}>{title}</button>
             ) : (
               <button type="button" className="mts__name-btn" aria-label="Elegir archivo .mid" onClick={pickFile}>{title}</button>
             )}
-          </h1>
+          </p>
           <div className="mts__hero-foot">
             <div className="mts__pick">
               <Button label={s.loaded ? 'Cambiar archivo' : 'Elegir archivo .mid'} glyph="↑" glyphPosition="start" variant="minimal" intent="neutral" size="lg" className={`mts__open ${s.loaded ? 'mts__open--again' : ''}`} onClick={pickFile} />
@@ -194,11 +193,6 @@ export default function App() {
           </>
         )}
       </main>
-
-      <div className="mts__footer">
-        <Footer brand="MIDI TRACK SPLIT" tagline="" columns="" social="" copyright="MIT · Daniel Martínez Sebastián" variant="minimal" />
-        <a className="mts__site" href="https://www.martinezsebastian.com/herramientas/midi-track-split" target="_blank" rel="noopener">martinezsebastian.com ↗</a>
-      </div>
 
       {s.loaded && <Transport s={s} />}
       {dragging && (

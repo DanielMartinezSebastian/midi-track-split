@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://miditracksplit.martinezsebastian.com/sitemap.xml
