@@ -127,6 +127,10 @@ Todo vive en el proyecto para no depender de internet:
 `web/vendor/`, `web/fonts/` y la interfaz empaquetada ya vienen en el repo, así que
 `npm run web` funciona sin internet nada más clonar, sin instalar dependencias de desarrollo.
 
+La web está en **español** (`/`), **inglés** (`/en/`) y **alemán** (`/de/`). Los textos de la
+interfaz están en `ui/i18n.js` y el contenido de cada página (título, texto, preguntas frecuentes)
+en `scripts/pages/content.mjs`; `npm run build:pages` regenera los tres `index.html` y el sitemap.
+
 Para tocar la interfaz, edita `ui/` y recompila con `npm run build:ui` (o deja
 `npm run dev:ui` vigilando los cambios). `trama-ui` se instala desde
 `scripts/vendor-pkg/` porque la versión que usa el proyecto aún no está en npm.

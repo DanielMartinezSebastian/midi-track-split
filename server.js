@@ -77,7 +77,7 @@ async function ensureCert(ips) {
 async function handler(req, res) {
   try {
     const urlPath = decodeURIComponent(req.url.split('?')[0]);
-    const rel = normalize(urlPath === '/' ? '/index.html' : urlPath).replace(/^(\.\.[/\\])+/, '');
+    const rel = normalize(urlPath.endsWith('/') ? `${urlPath}index.html` : urlPath).replace(/^(\.\.[/\\])+/, '');
     const filePath = join(ROOT, rel);
     if (!filePath.startsWith(ROOT)) {
       res.writeHead(403).end('Forbidden');

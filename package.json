@@ -26,12 +26,13 @@
     "build:vendor": "node scripts/build-vendor.mjs",
     "fetch-fonts": "node scripts/fetch-fonts.mjs",
     "fetch-sounds": "node scripts/fetch-sounds.mjs",
-    "setup:assets": "npm run build:vendor && npm run fetch-fonts && npm run build:ui",
+    "setup:assets": "npm run build:vendor && npm run fetch-fonts && npm run build:ui && npm run build:pages",
     "sample": "node scripts/make-sample.js",
     "capture": "node scripts/capture.mjs",
     "build:ui": "node scripts/build-ui.mjs",
     "dev:ui": "node scripts/build-ui.mjs --watch",
-    "og": "node scripts/og.mjs"
+    "og": "node scripts/og.mjs",
+    "build:pages": "node scripts/build-pages.mjs"
   },
   "keywords": [
     "midi",

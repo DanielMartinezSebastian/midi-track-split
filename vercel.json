@@ -32,7 +32,7 @@
       ]
     },
     {
-      "source": "/(og.png|favicon.svg)",
+      "source": "/(.*)(og.png|favicon.svg)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -40,5 +40,6 @@
         }
       ]
     }
-  ]
+  ],
+  "trailingSlash": true
 }

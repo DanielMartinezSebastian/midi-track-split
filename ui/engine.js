@@ -14,12 +14,14 @@ import {
   getSoundfontKit, setSoundfontKit, getDrumMachine, setDrumMachine,
   isKitLocal, isDrumMachineLocal,
 } from './sounds.js';
+// `i18n` y no `t`: aquí `t` es el nombre habitual de una pista
+import { t as i18n } from './i18n.js';
 
 const midiOut = new MidiOut();
 
 const state = {
   fileName: '',
-  stem: 'pistas',
+  stem: i18n('file.tracks'),
   originalBytes: null, // copia para reconstruir el .mid combinado
   tracks: [],   // resultado de splitMidi
   parts: [],    // { notes, muted, solo, toExternal, gain, spec, inst, part }
@@ -71,7 +73,7 @@ function buildSnapshot() {
         name: t.name,
         notes: t.notes,
         drum: p?.spec.type === 'drum',
-        label: p?.spec.type === 'drum' ? 'batería' : (p?.spec.instrument || '').replace(/_/g, ' '),
+        label: p?.spec.type === 'drum' ? i18n('engine.drums') : (p?.spec.instrument || '').replace(/_/g, ' '),
         start: trackStart(i),
         muted: !!p?.muted,
         solo: !!p?.solo && !routed,
@@ -131,7 +133,7 @@ export function fmt(sec) {
 function download(data, name, type = 'audio/midi') {
   const blob = data instanceof Blob ? data : new Blob([data], { type });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createElemeni18n('a');
   a.href = url;
   a.download = name;
   a.click();
@@ -156,16 +158,16 @@ export async function loadFile(file) {
   try {
     tracks = splitMidi(bytes, { includeEmpty: false });
   } catch (err) {
-    showError(`No se pudo leer el MIDI: ${err.message}`);
+    showError(i18n('engine.errRead', { msg: err.message }));
     return;
   }
   if (tracks.length === 0) {
-    showError('El archivo no contiene pistas con notas.');
+    showError(i18n('engine.errEmpty'));
     return;
   }
 
   state.originalBytes = bytes.slice();
-  state.stem = file.name.replace(/\.(mid|midi)$/i, '') || 'pistas';
+  state.stem = file.name.replace(/\.(mid|midi)$/i, '') || i18n('file.tracks');
   state.tracks = tracks;
   state.fileName = file.name;
   buildPlayer(buf);
@@ -243,7 +245,7 @@ function ensureInstruments() {
   const pending = state.parts.filter((p) => !p.inst);
   if (pending.length === 0) return Promise.resolve();
 
-  setStatus('Cargando instrumentos…');
+  setStatus(i18n('engine.loading'));
   state.loading = loadSoundManifest()
     .then(() => {
       const loaders = pending.map((p) => {
@@ -652,7 +654,7 @@ function exportBytes(track, name) {
 export function downloadTrack(i) {
   const t = state.tracks[i];
   if (!t) return;
-  const name = sanitizeName(t.name, `pista-${i + 1}`);
+  const name = sanitizeName(t.name, `${i18n('file.track')}-${i + 1}`);
   download(exportBytes(t, name), `${name}.mid`);
 }
 
@@ -662,7 +664,7 @@ export async function downloadZip() {
   const used = new Set();
 
   state.tracks.forEach((t, i) => {
-    let name = sanitizeName(t.name, `pista-${i + 1}`);
+    let name = sanitizeName(t.name, `${i18n('file.track')}-${i + 1}`);
     let unique = name;
     for (let n = 2; used.has(unique.toLowerCase()); n++) unique = `${name} (${n})`;
     used.add(unique.toLowerCase());
@@ -678,7 +680,7 @@ export function downloadMerged() {
 
   const config = state.tracks.map((t, i) => ({
     index: t.index,
-    name: sanitizeName(t.name, `pista-${i + 1}`),
+    name: sanitizeName(t.name, `${i18n('file.track')}-${i + 1}`),
     muted: !!state.parts[i]?.muted,
   }));
 
@@ -686,17 +688,17 @@ export function downloadMerged() {
   try {
     bytes = mergeMidi(state.originalBytes, config);
   } catch (err) {
-    showError(`No se pudo generar el MIDI combinado: ${err.message}`);
+    showError(i18n('engine.errMerge', { msg: err.message }));
     return;
   }
 
-  download(bytes, `${sanitizeName(state.stem, 'cancion')} (editado).mid`);
+  download(bytes, `${sanitizeName(state.stem, i18n('file.song'))} (${i18n('file.edited')}).mid`);
 }
 
 // ---------- bancos de sonido ----------
 
 loadSoundManifest().then(() => {
-  const withLocal = (label, local) => label + (local ? ' (local)' : '');
+  const withLocal = (label, local) => label + (local ? ` ${i18n('sound.local')}` : '');
   state.banks = {
     ready: true,
     drums: DRUM_MACHINES.map((d) => ({ id: d.id, label: withLocal(d.label, isDrumMachineLocal(d.id)) })),
@@ -752,8 +754,8 @@ export async function midiConnect() {
       ...state.midi,
       busy: false,
       error: /permission|not granted|denied|security/i.test(err.message || '')
-        ? 'No se concedió permiso para usar MIDI. Permítelo en el icono de ajustes junto a la URL (o en chrome://settings/content/midi) y vuelve a pulsar el botón.'
-        : (err.message || 'No se pudo acceder a los dispositivos MIDI.'),
+        ? i18n('midi.denied')
+        : (err.message || i18n('midi.failed')),
     };
     emit();
   }

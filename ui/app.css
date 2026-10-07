@@ -230,3 +230,14 @@ body { margin: 0; }
 body:has(.mts-dock) .info-foot { padding-bottom: calc(84px + 36px); }
 /* a pantalla completa, o con ?bare, solo las visuales */
 body:has(.mts--visual) .info, body:has(.mts--visual) .info-foot, body:has(.mts--bare) .info, body:has(.mts--bare) .info-foot { display: none; }
+
+/* ---------- idiomas: enlaces en el pie estático y desplegable en la cabecera ---------- */
+.info-foot__langs { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 14px; font: 700 12px/1 'JetBrains Mono', monospace; letter-spacing: 0.2em; text-transform: uppercase; }
+.info-foot__langs a, .info-foot__langs span { display: inline-flex; align-items: center; min-height: 44px; }
+.info-foot__langs span { color: #f2f2f2; border-bottom: 1px solid #f2f2f2; }
+.info-foot__langs a { text-decoration: none; color: #9a9a9a; }
+.mts__nav .ui-nav__menu { background: var(--bg) !important; border: 1px solid var(--ln); border-radius: 0; box-shadow: none; }
+.mts__nav .ui-nav__menu .ui-nav__mitem, .mts__nav .ui-nav__menu a { font: 700 12px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg); }
+.mts__nav .ui-nav__trigger { font: 500 11px/1 var(--mono); letter-spacing: 0.28em; text-transform: uppercase; color: var(--mut); }
+.mts__nav .ui-nav__sheet .ui-nav__trigger, .mts__nav .ui-nav__sheet .ui-nav__acc { min-height: 52px; font: 700 14px/1 var(--mono); letter-spacing: 0.28em; color: var(--fg); }
+.mts__nav .ui-nav__sheet a { display: flex; align-items: center; min-height: 48px; color: var(--fg); font-family: var(--mono); letter-spacing: 0.2em; text-transform: uppercase; }

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MIDI-Spuren trennen online · MIDI Track Split</title>
+  <meta name="description" content="MIDI-Spuren online trennen, kostenlos: MIDI-Datei in einzelne Spuren aufteilen, mit MIDI Player online und 3D-Visualizer anhören und herunterladen. Ohne Upload." />
+  <meta name="author" content="Daniel Martínez Sebastián" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://miditracksplit.martinezsebastian.com/de/" />
+  <link rel="alternate" hreflang="es" href="https://miditracksplit.martinezsebastian.com/" />
+  <link rel="alternate" hreflang="en" href="https://miditracksplit.martinezsebastian.com/en/" />
+  <link rel="alternate" hreflang="de" href="https://miditracksplit.martinezsebastian.com/de/" />
+  <link rel="alternate" hreflang="x-default" href="https://miditracksplit.martinezsebastian.com/en/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MIDI Track Split" />
+  <meta property="og:title" content="MIDI-Spuren trennen online · MIDI Track Split" />
+  <meta property="og:description" content="MIDI-Spuren online trennen, kostenlos: MIDI-Datei in einzelne Spuren aufteilen, mit MIDI Player online und 3D-Visualizer anhören und herunterladen. Ohne Upload." />
+  <meta property="og:url" content="https://miditracksplit.martinezsebastian.com/de/" />
+  <meta property="og:image" content="https://miditracksplit.martinezsebastian.com/de/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="MIDI Track Split · Daniel Martínez Sebastián" />
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MIDI-Spuren trennen online · MIDI Track Split" />
+  <meta name="twitter:description" content="MIDI-Spuren online trennen, kostenlos: MIDI-Datei in einzelne Spuren aufteilen, mit MIDI Player online und 3D-Visualizer anhören und herunterladen. Ohne Upload." />
+  <meta name="twitter:image" content="https://miditracksplit.martinezsebastian.com/de/og.png" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <link rel="stylesheet" href="/app.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://miditracksplit.martinezsebastian.com/de/#app","name":"MIDI Track Split","url":"https://miditracksplit.martinezsebastian.com/de/","description":"MIDI-Spuren online trennen, kostenlos: MIDI-Datei in einzelne Spuren aufteilen, mit MIDI Player online und 3D-Visualizer anhören und herunterladen. Ohne Upload.","applicationCategory":"MultimediaApplication","operatingSystem":"Web","browserRequirements":"Benötigt JavaScript. Die Ausgabe an ein MIDI-Keyboard braucht Web MIDI (Chrome, Edge oder Opera).","inLanguage":"de","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"image":"https://miditracksplit.martinezsebastian.com/de/og.png","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/DanielMartinezSebastian/midi-track-split","dateModified":"2026-10-07","author":{"@type":"Person","name":"Daniel Martínez Sebastián","url":"https://www.martinezsebastian.com"}},{"@type":"FAQPage","@id":"https://miditracksplit.martinezsebastian.com/de/#faq","inLanguage":"de","mainEntity":[{"@type":"Question","name":"Wird meine MIDI-Datei auf einen Server hochgeladen?","acceptedAnswer":{"@type":"Answer","text":"Nein. Die Datei wird in deinem Browser gelesen und aufgeteilt und nie an einen Server gesendet. Aus dem Internet geladen werden nur die Klang-Samples der Instrumente."}},{"@type":"Question","name":"Ist das kostenlos?","acceptedAnswer":{"@type":"Answer","text":"Ja. MIDI Track Split ist kostenlos, ohne Anmeldung und Open Source unter der MIT-Lizenz."}},{"@type":"Question","name":"Welche Dateien werden unterstützt und was kann ich herunterladen?","acceptedAnswer":{"@type":"Answer","text":"Unterstützt werden .mid- und .midi-Dateien. Du kannst jede Spur als eigene .mid herunterladen, alle zusammen als .zip oder eine einzige MIDI-Datei ohne die stummgeschalteten Spuren und mit den geänderten Namen."}},{"@type":"Question","name":"Funktioniert es auf dem Handy?","acceptedAnswer":{"@type":"Answer","text":"Ja. Die Oberfläche ist für Smartphone und Tablet gemacht. Die Ausgabe an ein externes MIDI-Keyboard braucht einen Browser mit Web MIDI (Chrome, Edge oder Opera) und ist auf iPhone und iPad nicht verfügbar."}},{"@type":"Question","name":"Klingen die getrennten Spuren wie das Original?","acceptedAnswer":{"@type":"Answer","text":"Ja. Jede Spur behält Tempo, Taktart und Tonart des Songs und klingt daher wie in der Originaldatei."}}]}]}</script>
+  <script type="importmap">
+  {
+    "imports": {
+      "midi-file": "/vendor/midi-file.js",
+      "jszip": "/vendor/jszip.js",
+      "tone": "/vendor/tone.js",
+      "@tonejs/midi": "/vendor/tonejs-midi.js",
+      "smplr": "/vendor/smplr.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Generado por scripts/build-pages.mjs: no editar a mano. La aplicación (React) se monta en #root;
+       lo de debajo es contenido estático, que se lee sin JavaScript. -->
+  <div id="root"></div>
+
+  <main class="info" id="info">
+    <p class="info__label">Was es ist</p>
+    <h1>MIDI-Spuren trennen – online</h1>
+    <p class="info__lead">MIDI Track Split ist ein kostenloses Tool, mit dem du <strong>die Spuren einer MIDI-Datei trennen</strong> kannst – direkt im Browser. Du lädst eine <code>.mid</code>-Datei (MIDI file), bekommst eine Spur pro Instrument, kannst sie zusammen oder einzeln anhören und herunterladen. Keine Installation, kein Konto.</p>
+
+    <section>
+      <h2>So teilst du eine MIDI-Datei in Spuren auf</h2>
+      <ol>
+        <li><strong>Datei laden.</strong> Drücke „.mid-Datei wählen“ oder ziehe sie ins Fenster. Unterstützt werden <code>.mid</code> und <code>.midi</code>.</li>
+        <li><strong>Anhören und anpassen.</strong> Jede Spur erscheint mit ihrem Instrument. Du kannst sie umbenennen, stummschalten, solo hören oder die Wiedergabe bei ihrer ersten Note starten.</li>
+        <li><strong>Herunterladen.</strong> Speichere jede Spur als eigene <code>.mid</code>, alle zusammen als <code>.zip</code> oder eine einzige MIDI-Datei ohne die stummgeschalteten Spuren.</li>
+      </ol>
+      <p>Jede extrahierte Spur behält Tempo, Taktart und Tonart des Songs und klingt deshalb genau wie in der Originaldatei.</p>
+    </section>
+
+    <section>
+      <h2>MIDI Player online</h2>
+      <p>Das Tool ist zugleich ein <strong>MIDI Player online</strong>: Du kannst eine MIDI-Datei abspielen, ohne etwas zu installieren. Jede Spur nutzt ihr General-MIDI-Instrument mit echten Samples; Klangbank und Drum Machine lassen sich wechseln.</p>
+      <p>Der Player bietet Solo und Mute pro Spur, eine Loop-Funktion und eine Positionsleiste. Außerdem kann er bei der ersten Note einer beliebigen Spur starten – praktisch, um den Einsatz eines Instruments zu finden.</p>
+    </section>
+
+    <section>
+      <h2>MIDI Visualizer online, in 3D</h2>
+      <p>Der Hintergrund ist ein <strong>3D MIDI Visualizer</strong>, der auf die Musik reagiert. Das Schlagzeug ist der Kern, jede weitere Spur ein Ring, der ihre echte Wellenform zeichnet und mit ihren Noten aufleuchtet. Zu sehen sind nur die aktiven Spuren – Mute und Solo verändern also das Bild. Der Vollbild-Button blendet die Oberfläche aus und zeigt nur die Visuals; ein Tippen auf die Fläche wechselt den Render-Stil.</p>
+    </section>
+
+    <section>
+      <h2>Eine Spur an ein MIDI-Keyboard oder einen Synthesizer senden</h2>
+      <p>Ist ein MIDI-Gerät angeschlossen, kannst du jede Spur an dein Keyboard oder deinen Synthesizer schicken, während der Rest auf dem Rechner weiterläuft. Dafür wird die Web-MIDI-API genutzt, die es in Chrome, Edge und Opera gibt.</p>
+    </section>
+
+    <section>
+      <h2>Was du mit den getrennten Spuren machen kannst</h2>
+      <p>MIDI-Spuren zu extrahieren lohnt sich, wenn du mit jedem Instrument einzeln arbeiten willst. Die häufigsten Anwendungen:</p>
+      <ul>
+        <li><strong>In eine DAW importieren.</strong> Ziehe jede <code>.mid</code> auf eine Spur in Ableton Live, FL Studio, Logic, Reaper oder Cubase und weise ihr ein beliebiges virtuelles Instrument zu. Da alle Tempo und Taktart behalten, bleiben sie synchron.</li>
+        <li><strong>Dein Instrument üben.</strong> Schalte deine Stimme stumm und spiele zum Rest, oder höre die Linie, die du lernen willst, solo und im Loop.</li>
+        <li><strong>Ein Arrangement oder Playback bauen.</strong> Nimm die Melodie heraus und behalte die Begleitung, oder lade eine MIDI-Datei nur mit den Spuren herunter, die du brauchst.</li>
+        <li><strong>Einen Song analysieren.</strong> Benenne die Spuren um, sieh, wann welches Instrument einsetzt, und springe direkt zu seiner ersten Note.</li>
+        <li><strong>Mit Hardware spielen.</strong> Schicke Bass oder Melodie an deinen Synthesizer, während der Computer den Rest abspielt.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Häufige Fragen</h2>
+      <h3>Wird meine MIDI-Datei auf einen Server hochgeladen?</h3>
+      <p>Nein. Die Datei wird in deinem Browser gelesen und aufgeteilt und nie an einen Server gesendet. Aus dem Internet geladen werden nur die Klang-Samples der Instrumente.</p>
+      <h3>Ist das kostenlos?</h3>
+      <p>Ja. MIDI Track Split ist kostenlos, ohne Anmeldung und Open Source unter der MIT-Lizenz.</p>
+      <h3>Welche Dateien werden unterstützt und was kann ich herunterladen?</h3>
+      <p>Unterstützt werden .mid- und .midi-Dateien. Du kannst jede Spur als eigene .mid herunterladen, alle zusammen als .zip oder eine einzige MIDI-Datei ohne die stummgeschalteten Spuren und mit den geänderten Namen.</p>
+      <h3>Funktioniert es auf dem Handy?</h3>
+      <p>Ja. Die Oberfläche ist für Smartphone und Tablet gemacht. Die Ausgabe an ein externes MIDI-Keyboard braucht einen Browser mit Web MIDI (Chrome, Edge oder Opera) und ist auf iPhone und iPad nicht verfügbar.</p>
+      <h3>Klingen die getrennten Spuren wie das Original?</h3>
+      <p>Ja. Jede Spur behält Tempo, Taktart und Tonart des Songs und klingt daher wie in der Originaldatei.</p>
+    </section>
+
+    <section>
+      <h2>Mehr zum Projekt</h2>
+      <p>Es gibt auch eine Kommandozeilen-Version, um MIDI-Spuren im Terminal zu trennen. Der Code liegt auf <a href="https://github.com/DanielMartinezSebastian/midi-track-split" rel="noopener">GitHub</a>, die Geschichte des Projekts steht auf der <a href="https://www.martinezsebastian.com/herramientas/midi-track-split">Projektseite bei martinezsebastian.com</a> (auf Spanisch).</p>
+    </section>
+  </main>
+
+  <footer class="info-foot">
+    <strong>MIDI Track Split</strong>
+    <p>
+      Von <a href="https://www.martinezsebastian.com" rel="author">Daniel Martínez Sebastián</a> · MIT-Lizenz ·
+      Aktualisiert im <time datetime="2026-10-07">Oktober 2026</time>
+    </p>
+    <nav class="info-foot__langs" aria-label="Sprachen">
+      <a href="/" hreflang="es" lang="es">Español</a>
+      <a href="/en/" hreflang="en" lang="en">English</a>
+      <span aria-current="page">Deutsch</span>
+    </nav>
+    <a class="info-foot__site" href="https://www.martinezsebastian.com/herramientas/midi-track-split">martinezsebastian.com ↗</a>
+  </footer>
+
+  <noscript><p class="info-noscript">Das Tool braucht JavaScript, um die MIDI-Datei zu laden, abzuspielen und aufzuteilen.</p></noscript>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

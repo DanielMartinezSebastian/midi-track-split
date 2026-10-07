@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Split MIDI Tracks Online · MIDI Track Split</title>
+  <meta name="description" content="Split MIDI tracks online for free: separate a MIDI file into individual tracks, listen with an online MIDI player and 3D visualizer, and download them. No upload." />
+  <meta name="author" content="Daniel Martínez Sebastián" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://miditracksplit.martinezsebastian.com/en/" />
+  <link rel="alternate" hreflang="es" href="https://miditracksplit.martinezsebastian.com/" />
+  <link rel="alternate" hreflang="en" href="https://miditracksplit.martinezsebastian.com/en/" />
+  <link rel="alternate" hreflang="de" href="https://miditracksplit.martinezsebastian.com/de/" />
+  <link rel="alternate" hreflang="x-default" href="https://miditracksplit.martinezsebastian.com/en/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MIDI Track Split" />
+  <meta property="og:title" content="Split MIDI Tracks Online · MIDI Track Split" />
+  <meta property="og:description" content="Split MIDI tracks online for free: separate a MIDI file into individual tracks, listen with an online MIDI player and 3D visualizer, and download them. No upload." />
+  <meta property="og:url" content="https://miditracksplit.martinezsebastian.com/en/" />
+  <meta property="og:image" content="https://miditracksplit.martinezsebastian.com/en/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="MIDI Track Split · Daniel Martínez Sebastián" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:locale:alternate" content="de_DE" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Split MIDI Tracks Online · MIDI Track Split" />
+  <meta name="twitter:description" content="Split MIDI tracks online for free: separate a MIDI file into individual tracks, listen with an online MIDI player and 3D visualizer, and download them. No upload." />
+  <meta name="twitter:image" content="https://miditracksplit.martinezsebastian.com/en/og.png" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <link rel="stylesheet" href="/app.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://miditracksplit.martinezsebastian.com/en/#app","name":"MIDI Track Split","url":"https://miditracksplit.martinezsebastian.com/en/","description":"Split MIDI tracks online for free: separate a MIDI file into individual tracks, listen with an online MIDI player and 3D visualizer, and download them. No upload.","applicationCategory":"MultimediaApplication","operatingSystem":"Web","browserRequirements":"Requires JavaScript. Output to a MIDI keyboard needs Web MIDI (Chrome, Edge or Opera).","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"image":"https://miditracksplit.martinezsebastian.com/en/og.png","license":"https://opensource.org/licenses/MIT","codeRepository":"https://github.com/DanielMartinezSebastian/midi-track-split","dateModified":"2026-10-07","author":{"@type":"Person","name":"Daniel Martínez Sebastián","url":"https://www.martinezsebastian.com"}},{"@type":"FAQPage","@id":"https://miditracksplit.martinezsebastian.com/en/#faq","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is my MIDI file uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The file is read and split in your own browser and is never sent to a server. The only thing downloaded from the internet is the instrument sound samples."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. MIDI Track Split is free, needs no sign-up and is open source under the MIT license."}},{"@type":"Question","name":"Which files does it accept and what can I download?","acceptedAnswer":{"@type":"Answer","text":"It accepts .mid and .midi files. You can download each track as a separate .mid, all of them together in a .zip, or a single merged MIDI without the tracks you muted and with the names you changed."}},{"@type":"Question","name":"How do I separate MIDI drums into their own track?","acceptedAnswer":{"@type":"Answer","text":"Load the file and download the drum track with its .mid button. If the drums are on their own track in the file, you get them as a standalone MIDI that keeps the tempo of the song."}},{"@type":"Question","name":"Does it work on a phone?","acceptedAnswer":{"@type":"Answer","text":"Yes. The interface is designed for phones and tablets. Sending a track to an external MIDI keyboard needs a browser with Web MIDI (Chrome, Edge or Opera) and is not available on iPhone or iPad."}},{"@type":"Question","name":"Do the separated tracks sound like the original?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each track keeps the tempo, time signature and key of the song, so it sounds the same as inside the original file."}}]}]}</script>
+  <script type="importmap">
+  {
+    "imports": {
+      "midi-file": "/vendor/midi-file.js",
+      "jszip": "/vendor/jszip.js",
+      "tone": "/vendor/tone.js",
+      "@tonejs/midi": "/vendor/tonejs-midi.js",
+      "smplr": "/vendor/smplr.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Generado por scripts/build-pages.mjs: no editar a mano. La aplicación (React) se monta en #root;
+       lo de debajo es contenido estático, que se lee sin JavaScript. -->
+  <div id="root"></div>
+
+  <main class="info" id="info">
+    <p class="info__label">What it is</p>
+    <h1>Split MIDI tracks online</h1>
+    <p class="info__lead">MIDI Track Split is a free tool to <strong>split a MIDI file into separate tracks</strong> right in your browser. Load a <code>.mid</code> and it gives you one track per instrument, which you can play together or on their own and then download. Nothing to install and no account needed.</p>
+
+    <section>
+      <h2>How to split a MIDI file into tracks</h2>
+      <ol>
+        <li><strong>Load the file.</strong> Press “Choose .mid file” or drop it on the window. Both <code>.mid</code> and <code>.midi</code> files work.</li>
+        <li><strong>Listen and adjust.</strong> Each track shows up with its instrument. You can rename it, mute it, solo it or start playback from its first note.</li>
+        <li><strong>Download.</strong> Save each track as its own <code>.mid</code>, all of them in a <code>.zip</code>, or a single merged MIDI without the tracks you muted.</li>
+      </ol>
+      <p>Every extracted track keeps the tempo, time signature and key of the song, so it sounds exactly as it did inside the original file.</p>
+    </section>
+
+    <section>
+      <h2>Online MIDI player</h2>
+      <p>It also works as an <strong>online MIDI player</strong>: play a MIDI file online without installing anything. Each track uses its General MIDI instrument with real samples, and you can switch the sound bank and the drum machine.</p>
+      <p>The player has solo and mute per track, a loop button and a seek bar, and it can start from the first note of any track, which is handy for finding where an instrument comes in.</p>
+    </section>
+
+    <section>
+      <h2>MIDI visualizer online, in 3D</h2>
+      <p>The background is a <strong>3D MIDI visualizer</strong> driven by the music. The drums are the core and every other track is a ring that draws its real waveform and lights up with its notes. Only active tracks are shown, so muting or soloing changes the picture. The full-screen button hides the interface and leaves just the visuals; tap the canvas to change the render style.</p>
+    </section>
+
+    <section>
+      <h2>Send a track to a MIDI keyboard or synth</h2>
+      <p>With a MIDI device connected you can route any track to your keyboard or synthesizer while the rest keeps playing on your computer. It uses the Web MIDI API, available in Chrome, Edge and Opera.</p>
+    </section>
+
+    <section>
+      <h2>What to do with the separated tracks</h2>
+      <p>Separating MIDI tracks lets you work with each instrument on its own. The most common uses:</p>
+      <ul>
+        <li><strong>Import them into a DAW.</strong> Drag each <code>.mid</code> onto a track in Ableton Live, FL Studio, Logic, Reaper or Cubase and assign any virtual instrument. They all keep the tempo and time signature, so they stay lined up.</li>
+        <li><strong>Practice your instrument.</strong> Mute your part and play over the rest, or solo the line you want to learn and loop it as many times as you need.</li>
+        <li><strong>Make an arrangement or a backing track.</strong> Drop the melody to keep the accompaniment, or download a merged MIDI with only the tracks you want.</li>
+        <li><strong>Study a song.</strong> Rename the tracks, see when each instrument enters and jump straight to its first note.</li>
+        <li><strong>Play with hardware.</strong> Send the bass or the lead to your synth while the computer plays everything else.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Frequently asked questions</h2>
+      <h3>Is my MIDI file uploaded to a server?</h3>
+      <p>No. The file is read and split in your own browser and is never sent to a server. The only thing downloaded from the internet is the instrument sound samples.</p>
+      <h3>Is it free?</h3>
+      <p>Yes. MIDI Track Split is free, needs no sign-up and is open source under the MIT license.</p>
+      <h3>Which files does it accept and what can I download?</h3>
+      <p>It accepts .mid and .midi files. You can download each track as a separate .mid, all of them together in a .zip, or a single merged MIDI without the tracks you muted and with the names you changed.</p>
+      <h3>How do I separate MIDI drums into their own track?</h3>
+      <p>Load the file and download the drum track with its .mid button. If the drums are on their own track in the file, you get them as a standalone MIDI that keeps the tempo of the song.</p>
+      <h3>Does it work on a phone?</h3>
+      <p>Yes. The interface is designed for phones and tablets. Sending a track to an external MIDI keyboard needs a browser with Web MIDI (Chrome, Edge or Opera) and is not available on iPhone or iPad.</p>
+      <h3>Do the separated tracks sound like the original?</h3>
+      <p>Yes. Each track keeps the tempo, time signature and key of the song, so it sounds the same as inside the original file.</p>
+    </section>
+
+    <section>
+      <h2>More about the project</h2>
+      <p>There is also a command-line version to split MIDI tracks from the terminal. The code is on <a href="https://github.com/DanielMartinezSebastian/midi-track-split" rel="noopener">GitHub</a> and the story of the project is on its <a href="https://www.martinezsebastian.com/herramientas/midi-track-split">page at martinezsebastian.com</a> (in Spanish).</p>
+    </section>
+  </main>
+
+  <footer class="info-foot">
+    <strong>MIDI Track Split</strong>
+    <p>
+      Made by <a href="https://www.martinezsebastian.com" rel="author">Daniel Martínez Sebastián</a> · MIT license ·
+      Updated <time datetime="2026-10-07">October 2026</time>
+    </p>
+    <nav class="info-foot__langs" aria-label="Languages">
+      <a href="/" hreflang="es" lang="es">Español</a>
+      <span aria-current="page">English</span>
+      <a href="/de/" hreflang="de" lang="de">Deutsch</a>
+    </nav>
+    <a class="info-foot__site" href="https://www.martinezsebastian.com/herramientas/midi-track-split">martinezsebastian.com ↗</a>
+  </footer>
+
+  <noscript><p class="info-noscript">The tool needs JavaScript to load, play and split the MIDI file.</p></noscript>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
