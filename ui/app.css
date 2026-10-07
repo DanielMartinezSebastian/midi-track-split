@@ -1,0 +1,201 @@
+/* MIDI Track Split (prefijo mts-): el estilo de la landing SILO de Trama llevado a una herramienta.
+   Negro, blanco y un gris; sin superficies ni radios; tipografía enorme y etiquetas mono diminutas.
+   Solo organiza piezas del kit (trama-ui) sobre los tokens del tema, definidos en App.jsx. */
+
+:root {
+  color-scheme: dark;
+  /* trama-ui espera estas variables de next/font; aquí las fuentes son locales (web/fonts/) */
+  --font-inter: 'Inter';
+  --font-jetbrains-mono: 'JetBrains Mono';
+}
+
+* { box-sizing: border-box; }
+html { background: #000; }
+body { margin: 0; }
+
+.mts {
+  --gutter: clamp(20px, 5vw, 72px);
+  --mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --dock: 84px;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+  color: var(--fg);
+  background: var(--bg);
+  font: 400 15px/1.55 var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+.mts ::selection { background: var(--fg); color: var(--bg); }
+
+/* ---------- fondo fijo: un solo RetroCanvas ---------- */
+.mts__bg { position: fixed; inset: 0; z-index: 0; background: var(--bg); }
+/* velo: el texto está a la izquierda y abajo; ahí el fondo se calma. Con un archivo cargado hay mucho más texto: más velo */
+.mts__bg::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 70%, transparent) 0%, transparent 60%), linear-gradient(0deg, color-mix(in srgb, var(--bg) 60%, transparent) 0%, transparent 40%); transition: background-color 0.4s; }
+.mts--loaded .mts__bg::after { background-color: color-mix(in srgb, var(--bg) 30%, transparent); }
+
+/* ---------- barra: sin superficie, solo texto ---------- */
+.mts__nav { position: fixed; top: 0; left: 0; right: 0; z-index: 30; display: flex; align-items: center; gap: 8px; padding: 10px var(--gutter) 0; }
+.mts__nav > :first-child { flex: 1; min-width: 0; }
+.mts__nav .ui-nav__bar { background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.mts__nav .ui-nav__row { padding-inline: 0; }
+.mts__nav .ui-nav__brand { font: 700 12px/1 var(--mono); letter-spacing: 0.4em; }
+.mts__nav .ui-nav__link { font: 500 11px/1 var(--mono); letter-spacing: 0.28em; text-transform: uppercase; color: var(--mut); padding-inline: 10px; }
+.mts__nav .ui-nav__link:hover { color: var(--fg); }
+
+/* ---------- estructura ---------- */
+.mts__main { position: relative; z-index: 5; }
+.mts__label { margin: 0; font: 500 11px/1.4 var(--mono); letter-spacing: 0.32em; text-transform: uppercase; color: var(--mut); }
+.mts__label span { color: var(--fg); }
+.mts__section { display: grid; gap: clamp(28px, 4vw, 48px); padding: clamp(72px, 10vw, 140px) var(--gutter); scroll-margin-top: 20px; }
+/* la lista de pistas es lo que más se lee y se toca: una banda casi opaca la separa del fondo animado */
+#pistas { background: color-mix(in srgb, var(--bg) 88%, transparent); border-block: 1px solid var(--ln); }
+.mts__section--last { padding-bottom: clamp(80px, 10vw, 140px); }
+.mts__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; }
+.mts__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.mts__hint { margin: 0; max-width: 78ch; font: 500 12px/1.8 var(--mono); letter-spacing: 0.06em; color: var(--mut); }
+.mts__hint b { color: var(--fg); font-weight: 700; }
+.mts__hint code { color: var(--fg); font-family: inherit; overflow-wrap: anywhere; }
+.mts__statement { margin: 0; max-width: 16ch; font-size: clamp(36px, 6vw, 88px); line-height: 0.94; font-weight: 900; letter-spacing: -0.055em; }
+
+/* los botones del kit, en mono diminuta y cuadrados */
+.mts .ui-button, .mts-dock .ui-button { border-radius: 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; }
+.mts .ui-button[aria-pressed="true"], .mts .ui-button[aria-pressed="true"] .ui-button__label { background: var(--fg) !important; color: var(--bg) !important; text-shadow: none; }
+
+/* ---------- portada: el nombre como único gesto ---------- */
+.mts__hero { min-height: 100vh; min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding: clamp(96px, 12vw, 140px) var(--gutter) 40px; }
+.mts--loaded .mts__hero { min-height: 78vh; padding-bottom: 28px; }
+.mts__name { align-self: center; margin: 0; max-width: 100%; font-size: clamp(56px, calc(122vw / var(--len, 5)), 520px); line-height: 0.82; font-weight: 900; letter-spacing: -0.075em; margin-left: -0.05em; overflow-wrap: anywhere; text-transform: uppercase; }
+/* con un archivo cargado, el título es un botón: cambia el aspecto del fondo */
+.mts__name-btn { all: unset; cursor: pointer; overflow-wrap: anywhere; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.mts__name-btn:active { opacity: 0.7; }
+.mts__name-btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 6px; }
+.mts__hero-foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.mts__pick { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
+.mts__strip { position: relative; z-index: 5; padding-block: 14px; }
+.mts__strip .ui-marquee { font-family: var(--mono); letter-spacing: 0.3em; text-transform: uppercase; }
+
+/* ---------- pistas: una lista, sin tarjetas ---------- */
+.mts__tracks { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ln); }
+.mts__track { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 2px 16px; padding: clamp(14px, 2vw, 22px) 0; border-bottom: 1px solid var(--ln); transition: opacity 0.2s; scroll-margin-block: 80px 120px; }
+.mts__n { font: 500 11px/1 var(--mono); letter-spacing: 0.2em; color: var(--mut); }
+.mts__n.is-flash { animation: mts-flash 0.4s steps(2) 3; }
+@keyframes mts-flash { 50% { color: var(--bg); background: var(--fg); } }
+.mts__tname { grid-column: 2; width: 100%; min-width: 0; margin: 0; padding: 0; border: 0; border-bottom: 1px solid transparent; border-radius: 0; background: none; color: var(--fg); font: 900 clamp(26px, 4.6vw, 60px)/1.05 var(--font-inter), sans-serif; letter-spacing: -0.05em; text-overflow: ellipsis; transition: color 0.12s; }
+.mts__tname:hover { border-bottom-color: var(--ln); }
+.mts__tname:focus { outline: none; border-bottom-color: var(--fg); }
+.mts__meta { grid-column: 2; font: 500 12px/1.4 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--mut); }
+.mts__ctrl { grid-column: 3; grid-row: 1 / span 2; display: flex; align-items: center; gap: 8px; }
+/* controles de pista: pensados para el dedo (48 px de alto, borde visible, separación entre ellos) */
+.mts__ctrl .ui-tip { display: flex; }
+.mts__ctrl .ui-button { min-width: 56px; min-height: 48px; padding-inline: 14px; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: var(--fg); border: 1px solid color-mix(in srgb, var(--fg) 45%, transparent); background: var(--bg); touch-action: manipulation; }
+.mts__ctrl .ui-button:hover:not(:disabled) { border-color: var(--fg); }
+.mts__ctrl .ui-button:disabled { color: var(--mut); border-color: var(--ln); opacity: 1; }
+.mts .ui-button:focus-visible, .mts__tname:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+/* mientras suena la canción, solo las pistas con una nota en curso están a pleno blanco */
+.mts--playing .mts__track:not(.is-on) .mts__tname { color: color-mix(in srgb, var(--fg) 38%, transparent); }
+.mts__track.is-on .mts__n { color: var(--fg); }
+.mts__track.is-on .mts__n::after { content: " ■"; }
+.mts__track.is-on-ext .mts__n::after { content: " □"; }
+.mts__track.is-routed .mts__meta { color: var(--fg); }
+.mts__track.is-muted .mts__tname { color: var(--mut); text-decoration: line-through; text-decoration-thickness: 2px; }
+.mts__track.is-muted .mts__meta { opacity: 0.5; }
+/* con un solo activo se atenúa el texto de las demás pistas, nunca sus controles */
+.mts__track.is-dimmed .mts__tname, .mts__track.is-dimmed .mts__meta, .mts__track.is-dimmed .mts__n { opacity: 0.4; }
+
+@media (max-width: 760px) {
+  .mts__track { grid-template-columns: 34px minmax(0, 1fr); }
+  /* móvil y tablet en vertical: los cinco controles ocupan todo el ancho, a partes iguales */
+  .mts__ctrl { grid-column: 1 / -1; grid-row: auto; margin-top: 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .mts__ctrl .ui-button { width: 100%; min-width: 0; min-height: 52px; padding-inline: 2px; letter-spacing: 0.08em; }
+  .mts__ctrl .ui-button__glyph { margin: 0; }
+}
+
+/* ---------- campos (teclado MIDI y bancos de sonido) ---------- */
+.mts__fields { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px 28px; }
+.mts__fields .ui-select { flex: 0 1 280px; min-width: 200px; }
+.mts__fields .ui-select__label { font: 500 10px/1 var(--mono); letter-spacing: 0.32em; text-transform: uppercase; color: var(--mut); }
+.mts__fields .ui-select__trigger { border-width: 0 0 1px; border-radius: 0; background: none; padding-inline: 0; font-weight: 600; }
+.mts__fields .ui-select__list { border-radius: 0; background: var(--bg); border: 1px solid var(--ln); }
+.mts__toggles { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+
+/* ---------- pie ---------- */
+.mts__footer { position: relative; z-index: 5; padding: 0 var(--gutter) 28px; }
+.mts--loaded .mts__footer { padding-bottom: calc(var(--dock) + 28px); }
+.mts__footer .ui-footer { padding: 24px 0 0; background: none; border: 0; border-top: 1px solid var(--ln); border-radius: 0; box-shadow: none; }
+.mts__footer .ui-footer__brand strong { font: 700 12px/1 var(--mono); letter-spacing: 0.4em; }
+.mts__footer .ui-footer__bottom { font: 500 10px/1.4 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--mut); }
+
+/* ---------- soltar un archivo ---------- */
+.mts__drop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: var(--fg); color: var(--bg); pointer-events: none; }
+.mts__drop p { margin: 0; font-size: clamp(48px, 13vw, 220px); line-height: 0.85; font-weight: 900; letter-spacing: -0.07em; text-align: center; }
+
+/* ---------- transporte: una línea negra abajo, mono diminuta, botón cuadrado blanco.
+   Sin backdrop-filter: encima de un lienzo animado el desenfoque se recalcula en cada fotograma ---------- */
+.mts-dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: color-mix(in srgb, var(--bg) 94%, transparent); }
+.mts-dock__seek { position: relative; height: 28px; margin-top: -14px; cursor: pointer; touch-action: none; }
+.mts-dock__seek::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%); background: linear-gradient(90deg, var(--fg) var(--p, 0%), color-mix(in srgb, var(--fg) 28%, transparent) var(--p, 0%)); transition: height 0.12s; }
+.mts-dock__seek:hover::before, .mts-dock__seek.is-dragging::before, .mts-dock__seek:focus-visible::before { height: 7px; }
+.mts-dock__seek:focus-visible { outline: none; }
+.mts-dock__row { display: flex; align-items: center; gap: 8px; padding: 0 var(--gutter) max(12px, env(safe-area-inset-bottom)); min-height: calc(var(--dock) - 28px); }
+.mts-dock .ui-button { min-height: 44px; padding-inline: 14px; font-size: 12px; font-weight: 700; color: var(--fg); border: 1px solid color-mix(in srgb, var(--fg) 45%, transparent); touch-action: manipulation; }
+.mts-dock__play { flex: none; display: grid; place-items: center; width: 48px; height: 48px; margin-right: 10px; touch-action: manipulation; padding: 0; border: 0; border-radius: 0; background: var(--fg); color: var(--bg); cursor: pointer; }
+.mts-dock__play:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+.mts-dock__tri { width: 0; height: 0; margin-left: 3px; border-style: solid; border-width: 8px 0 8px 13px; border-color: transparent transparent transparent currentColor; }
+.mts-dock__pause { width: 14px; height: 16px; border-inline: 4px solid currentColor; }
+.mts-dock__status { margin-left: 10px; font: 500 10px/1.3 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--mut); }
+.mts-dock__time { margin-left: auto; font: 500 13px/1 var(--mono); letter-spacing: 0.12em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 560px) {
+  .mts-dock__status { display: none; }
+  .mts-dock .ui-button { padding-inline: 8px; letter-spacing: 0.1em; }
+  .mts-dock__row { gap: 5px; }
+  .mts-dock__play { margin-right: 6px; }
+}
+
+/* en pantallas táctiles no hay hover: la ayuda aparecería al pulsar (por el foco) y taparía los controles */
+@media (hover: none), (pointer: coarse) {
+  .mts .ui-tip__bubble { display: none !important; }
+}
+
+/* `?bare` en la URL: solo el fondo, sin interfaz (hoja de aspectos, capturas) */
+.mts--bare > :not(.mts__bg) { display: none; }
+.mts--bare .mts__bg::after { display: none; }
+
+
+/* ---------- pantalla completa: solo el fondo, con la cabecera y el transporte para poder volver y reproducir ---------- */
+.mts__full { position: relative; z-index: 2; flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 0; background: none; color: var(--fg); cursor: pointer; touch-action: manipulation; }
+.mts__full:hover { opacity: 0.7; }
+.mts__full:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.mts__full svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; }
+.mts--visual .mts__main, .mts--visual .mts__footer { display: none; }
+.mts--visual .mts__bg::after { display: none; }
+/* con la barra plegada (móvil), la hamburguesa va en el extremo derecho y pantalla completa a su izquierda.
+   Se intercambian con transform, sin tocar anchos: el plegado de NavBar depende del ancho de su contenedor */
+.mts__nav .ui-nav__burger { transform: translateX(52px); }
+.mts__nav:has(.ui-nav__burger) .mts__full { transform: translateX(-44px); }
+
+/* menú móvil (hamburguesa): un panel negro a todo el ancho bajo la cabecera, con enlaces grandes para el dedo */
+.mts__nav .ui-nav__sheet { position: fixed; top: 64px; left: 0; right: 0; width: auto; margin: 0; padding: 4px var(--gutter) 12px; background: var(--bg) !important; border: 0; border-block: 1px solid var(--ln); border-radius: 0; box-shadow: none; }
+.mts__nav .ui-nav__mlinks { display: grid; margin: 0; padding: 0; list-style: none; }
+.mts__nav .ui-nav__sheet .ui-nav__link { display: flex; align-items: center; min-height: 52px; padding: 0; font: 700 14px/1 var(--mono); letter-spacing: 0.28em; color: var(--fg); border-bottom: 1px solid var(--ln); }
+.mts__nav .ui-nav__mlinks li:last-child .ui-nav__link { border-bottom: 0; }
+
+/* ---------- cargar archivo: la acción principal. Un bloque blanco grande, imposible de fallar con el dedo ---------- */
+.mts .ui-button.mts__open { min-height: 64px; padding: 0 28px; gap: 14px; justify-content: center; font-size: 15px; font-weight: 700; letter-spacing: 0.2em; background: var(--fg) !important; color: var(--bg) !important; border: 2px solid var(--fg); text-decoration: none; text-shadow: none; touch-action: manipulation; }
+.mts .ui-button.mts__open * { color: inherit !important; text-shadow: none; text-decoration: none; }
+.mts .ui-button.mts__open::before, .mts .ui-button.mts__open::after { display: none; }
+.mts .ui-button.mts__open:hover { background: var(--bg) !important; color: var(--fg) !important; }
+/* con un archivo ya cargado sigue igual de grande, pero en hueco: no compite con el título */
+.mts .ui-button.mts__open--again { background: color-mix(in srgb, var(--bg) 80%, transparent) !important; color: var(--fg) !important; }
+.mts .ui-button.mts__open--again:hover { background: var(--fg) !important; color: var(--bg) !important; }
+@media (max-width: 640px) {
+  .mts__pick { flex: 1 1 100%; }
+  .mts .ui-button.mts__open { width: 100%; min-height: 68px; }
+  .mts__pick .mts__label { display: none; } /* en un teléfono no se arrastran archivos */
+}
+
+/* ---------- logo (web/favicon.svg) junto a la marca, y enlace a la web del autor en el pie ---------- */
+.mts__nav .ui-nav__brand { display: inline-flex; align-items: center; gap: 12px; }
+.mts__nav .ui-nav__brand::before { content: ""; flex: none; width: 22px; height: 22px; background: url("favicon.svg") center / contain no-repeat; }
+.mts__site { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; font: 700 12px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--fg); }
+.mts__site:hover { color: var(--bg); background: var(--fg); }
+.mts__site:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }

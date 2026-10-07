@@ -99,8 +99,17 @@ Abre la URL, arrastra un `.mid`, y podrás:
     activarlo en `brave://settings/content/midi`.
   - Chrome muestra lo que detecta en `chrome://device-log`.
 
-La interfaz usa un estilo neo-brutalista (colores pastel, bordes y sombras duras)
-con las tipografías **Syne** y **Space Grotesk**, e incluye un favicon SVG propio.
+La interfaz está hecha con React y [Trama](https://github.com/DanielMartinezSebastian/trama)
+(`trama-ui`), con un estilo minimalista oscuro: negro, blanco y un solo gris, tipografía
+enorme (**Inter**) y etiquetas diminutas en **JetBrains Mono**. Está pensada para usarse
+desde el móvil o la tablet: controles grandes, sin ayudas flotantes en pantallas táctiles.
+
+El fondo es una escena 3D (`RetroCanvas` de Trama) ligada a la música: la batería es el
+núcleo y cada una de las demás pistas un anillo que dibuja su **forma de onda real** y se
+ilumina con sus notas. Solo se ven las pistas activas, así que silenciar una o dejarla
+fuera de un solo retira su pieza. El botón de pantalla completa de la cabecera esconde la
+interfaz y deja solo las visuales; ahí, un toque en el lienzo cambia el estilo de render
+(con un archivo cargado también vale tocar su nombre).
 
 ## Recursos locales (sin CDN)
 
@@ -109,11 +118,16 @@ Todo vive en el proyecto para no depender de internet:
 | Recurso | Dónde | Se regenera con |
 | --- | --- | --- |
 | Librerías JS (`tone`, `smplr`, `jszip`, `@tonejs/midi`, `midi-file`) | `web/vendor/*.js` (versionado, ~560 KB) | `npm run build:vendor` |
-| Fuentes (woff2 + `fonts.css`) | `web/fonts/` (versionado, ~150 KB) | `npm run fetch-fonts` |
+| Interfaz empaquetada (React + `trama-ui` + three.js) | `web/app.js` y `web/app.css` (versionado, ~1,4 MB) | `npm run build:ui` |
+| Fuentes (woff2 + `fonts.css`) | `web/fonts/` (versionado, ~80 KB) | `npm run fetch-fonts` |
 | Muestras de instrumentos + batería | `web/soundfonts/` (**no** versionado) | `npm run fetch-sounds` |
 
-`web/vendor/` y `web/fonts/` ya vienen en el repo, así que `npm run web` funciona
-sin internet nada más clonar.
+`web/vendor/`, `web/fonts/` y la interfaz empaquetada ya vienen en el repo, así que
+`npm run web` funciona sin internet nada más clonar, sin instalar dependencias de desarrollo.
+
+Para tocar la interfaz, edita `ui/` y recompila con `npm run build:ui` (o deja
+`npm run dev:ui` vigilando los cambios). `trama-ui` se instala desde
+`scripts/vendor-pkg/` porque la versión que usa el proyecto aún no está en npm.
 
 Las **muestras de sonido** son pesadas (~2-3 MB por instrumento), así que se
 descargan aparte:
@@ -132,11 +146,15 @@ que se usa y el navegador lo cachea. Con `--all` la reproducción es 100% offlin
 ```
 bin/cli.js          Entrada de la CLI
 server.js           Servidor estático (HTTP, o HTTPS autofirmado con --https)
-web/                Interfaz (HTML + CSS + JS)
+ui/                 Código de la interfaz (React + trama-ui); se empaqueta en web/
+ui/App.jsx          Pantalla: portada, pistas, teclado MIDI, bancos de sonido y transporte
+ui/Stage.jsx        Fondo 3D reactivo (una pieza por pista)
+ui/engine.js        Motor sin DOM: carga, reproducción, enrutado MIDI y exportación
+ui/gm.js            Tablas General MIDI (instrumentos y mapa de percusión)
+ui/midiout.js       Envío a dispositivo MIDI externo (Web MIDI API)
+ui/sounds.js        Resuelve muestras locales (web/soundfonts/) o CDN
+web/                Lo que sirve server.js: index.html + app.js/app.css empaquetados
 web/split-core.js   Lógica de separación (compartida por CLI y web)
-web/gm.js           Tablas General MIDI (instrumentos y mapa de percusión)
-web/midiout.js      Envío a dispositivo MIDI externo (Web MIDI API)
-web/sounds.js       Resuelve muestras locales (web/soundfonts/) o CDN
 web/vendor/         Librerías JS empaquetadas (sin CDN)
 web/fonts/          Fuentes locales
 web/soundfonts/     Muestras descargadas con `npm run fetch-sounds` (no versionado)
@@ -165,7 +183,7 @@ Las muestras de instrumentos vienen de los *soundfonts* de
 [MIDI.js / MusyngKite](https://github.com/gleitz/midi-js-soundfonts) y la caja de
 ritmos TR-808 de [smpldsnds](https://github.com/smpldsnds/drum-machines),
 reproducidas con [smplr](https://github.com/danigb/smplr) sobre
-[Tone.js](https://tonejs.github.io/). Tipografías: **Syne** y **Space Grotesk**
+[Tone.js](https://tonejs.github.io/). Interfaz con [Trama](https://github.com/DanielMartinezSebastian/trama). Tipografías: **Inter** y **JetBrains Mono**
 (Google Fonts, SIL Open Font License).
 
 ## Licencia

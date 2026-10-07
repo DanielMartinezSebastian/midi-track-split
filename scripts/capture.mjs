@@ -1,8 +1,9 @@
-// Genera capturas para el README y los fotogramas del GIF de demo.
+// Genera las capturas de docs/shots/ y el GIF de demo (docs/demo.gif).
 //   node scripts/capture.mjs
-// Requiere: npm i -D playwright  ·  muestras descargadas (npm run fetch-sounds)
-import { chromium } from 'playwright';
-import { spawn } from 'node:child_process';
+// Requiere: npm i --no-save playwright-core  ·  Google Chrome instalado  ·  ffmpeg en el PATH (para el GIF)
+// y las muestras descargadas (npm run fetch-sounds) para que la reproducción no dependa del CDN.
+import { chromium } from 'playwright-core';
+import { spawn, spawnSync } from 'node:child_process';
 import { mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
@@ -11,6 +12,7 @@ import { setTimeout as wait } from 'node:timers/promises';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const SHOTS = join(root, 'docs', 'shots');
 const FRAMES = join(root, 'docs', 'frames');
+const GIF = join(root, 'docs', 'demo.gif');
 const DEMO = join(root, 'sample', 'demo.mid');
 const PORT = 4319;
 const APP_URL = `http://localhost:${PORT}/`;
@@ -43,158 +45,173 @@ for (const d of [SHOTS, FRAMES]) {
   await mkdir(d, { recursive: true });
 }
 
-const browser = await chromium.launch();
+// Chrome del sistema, con WebGL por software (el fondo es un lienzo 3D) y audio sin gesto previo
+const browser = await chromium.launch({
+  channel: 'chrome',
+  args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required', '--mute-audio'],
+});
 
-// deja el elemento `sel` con su borde superior a `top` px del viewport
-const anchor = (page, sel, top = 24) =>
-  page.$eval(sel, (el, t) => {
-    window.scrollBy(0, el.getBoundingClientRect().top - t);
-  }, top);
-
-// clip ajustado al elemento `sel` con un margen `pad`
-async function clipFor(page, sel, pad = 24, vw = 1100) {
-  await anchor(page, sel, pad);
-  const b = await page.locator(sel).boundingBox();
-  return {
-    x: Math.max(0, Math.round(b.x - pad)),
-    y: Math.max(0, Math.round(b.y - pad)),
-    width: Math.min(vw, Math.round(b.width + pad * 2)),
-    height: Math.round(b.height + pad * 2),
-  };
-}
-
-// ============ 1 · capturas para el README (retina) ============
-{
-  const ctx = await browser.newContext({
-    viewport: { width: 1100, height: 900 }, deviceScaleFactor: 2, colorScheme: 'light',
-  });
+async function open(viewport, deviceScaleFactor, extra = {}) {
+  const ctx = await browser.newContext({ viewport, deviceScaleFactor, colorScheme: 'dark', ...extra });
   await ctx.grantPermissions(['midi']);
   await ctx.addInitScript(NO_SMOOTH);
   await ctx.addInitScript(MIDI_MOCK);
   const page = await ctx.newPage();
   await page.goto(APP_URL, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => document.fonts.status === 'loaded');
-  await wait(300);
+  await page.waitForSelector('.mts__bg canvas');
+  await wait(1500); // el lienzo necesita unos fotogramas para arrancar
+  return { ctx, page };
+}
 
+// acciones sobre la interfaz
+const load = async (page) => {
+  await page.setInputFiles('input[type=file]', DEMO);
+  await page.waitForSelector('.mts__track');
+  await wait(600);
+};
+const scrollTo = (page, sel, top = 0) =>
+  page.$eval(sel, (el, t) => window.scrollBy(0, el.getBoundingClientRect().top - t), top);
+// botones de la pista n (1…): 1 Solo · 2 Mute · 3 EXT · 4 ▶ · 5 .mid
+const trackBtn = (page, n, b) => page.locator(`.mts__track:nth-child(${n}) .mts__ctrl button`).nth(b - 1);
+const dockBtn = (page, name) => page.locator('.mts-dock').getByRole('button', { name, exact: true });
+// pulsa reproducir y espera a que suene de verdad (la primera vez hay que cargar las muestras)
+const play = async (page) => {
+  await page.click('.mts-dock__play');
+  await page.waitForSelector('.mts--playing', { timeout: 60000 });
+};
+const connectMidi = async (page) => {
+  await page.getByRole('button', { name: 'Conectar teclado MIDI' }).click();
+  await page.locator('#teclado .ui-select__trigger').first().click();
+  await page.getByRole('option', { name: /JT MINI/ }).click();
+  await wait(300);
+};
+
+// ============ 1 · capturas (retina) ============
+{
+  const { ctx, page } = await open({ width: 1280, height: 800 }, 2);
   let s = 0;
-  const shot = async (name, sel) => {
+  const shot = async (name) => {
     s++;
-    const p = { path: join(SHOTS, `${String(s).padStart(2, '0')}-${name}.png`) };
-    if (sel === 'full') { p.fullPage = true; await page.evaluate(() => window.scrollTo(0, 0)); }
-    else if (sel) p.clip = await clipFor(page, sel);
-    else await page.evaluate(() => window.scrollTo(0, 0));
-    await wait(120);
-    await page.screenshot(p);
-    console.log('  docs/shots/' + p.path.split(/[\\/]/).pop());
+    const file = `${String(s).padStart(2, '0')}-${name}.png`;
+    await wait(250);
+    await page.screenshot({ path: join(SHOTS, file) });
+    console.log('  docs/shots/' + file);
   };
 
   await shot('landing');
 
-  await page.setInputFiles('#file', DEMO);
-  await page.waitForSelector('#track-list li');
-  await wait(400);
+  await load(page);
+  await shot('loaded');
 
-  await page.click('#midi-connect');
-  await page.waitForSelector('#midi-controls:not([hidden])');
-  await page.selectOption('#midi-device', 'jt-mini');
-  await wait(250);
-  await shot('app', 'full');
-  await shot('player', '#player');
-  await shot('tracks', '#tracks');
+  await scrollTo(page, '#pistas');
+  await shot('tracks');
 
-  await page.click('#track-list li:last-child .locate');
+  await dockBtn(page, 'Repetir en bucle').click();
+  await play(page);
+  await wait(9000); // con las cuatro pistas ya sonando
+  await shot('playing');
+
+  await trackBtn(page, 1, 1).click(); // solo en la primera pista
   await wait(1500);
-  await shot('playing', '#tracks');
+  await shot('solo');
+  await trackBtn(page, 1, 1).click();
 
-  await page.click('#track-list li:nth-child(3) .ext-btn'); // pista al teclado
-  await wait(600);
-  await shot('ext', '#tracks');
+  await scrollTo(page, '#teclado');
+  await connectMidi(page);
+  await shot('midi');
 
-  await page.click('#track-list li:first-child .solo-btn'); // solo en el PC
-  await wait(600);
-  await shot('solo', '#tracks');
-  await page.click('#track-list li:first-child .solo-btn');
-  await page.click('#track-list li:nth-child(3) .ext-btn');
-  await page.click('#stop');
-  await wait(200);
+  await scrollTo(page, '#pistas');
+  await trackBtn(page, 3, 3).click(); // la tercera pista, al teclado
+  await wait(1200);
+  await shot('ext');
+  await trackBtn(page, 3, 3).click();
 
-  const ni = page.locator('#track-list li:first-child .tname-input');
-  await ni.click();
-  await ni.fill('Piano principal');
-  await page.keyboard.press('Tab');
-  await wait(200);
-  await shot('rename', '#tracks');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.click('.mts__full'); // solo las visuales
+  await wait(5000);
+  await shot('visuals');
+  await page.click('.mts__bg'); // otro estilo de render
+  await wait(2500);
+  await shot('visuals-braille');
 
   await ctx.close();
 }
 
-// ============ 2 · fotogramas para el GIF (página completa visible) ============
+// ============ 2 · captura en móvil ============
 {
-  // viewport que abarca toda la app (cabecera + reproductor + pistas) sin scroll
-  const ctx = await browser.newContext({
-    viewport: { width: 1040, height: 1520 }, deviceScaleFactor: 1, colorScheme: 'light',
-  });
-  await ctx.grantPermissions(['midi']);
-  await ctx.addInitScript(NO_SMOOTH);
-  await ctx.addInitScript(MIDI_MOCK);
-  const page = await ctx.newPage();
-  await page.goto(APP_URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction(() => document.fonts.status === 'loaded');
-  await wait(300);
+  const { ctx, page } = await open({ width: 390, height: 844 }, 3, { hasTouch: true, isMobile: true });
+  await page.screenshot({ path: join(SHOTS, '10-mobile-landing.png') });
+  await load(page);
+  await scrollTo(page, '#pistas');
+  await play(page);
+  await wait(9000);
+  await page.screenshot({ path: join(SHOTS, '11-mobile-tracks.png') });
+  console.log('  docs/shots/10-mobile-landing.png\n  docs/shots/11-mobile-tracks.png');
+  await ctx.close();
+}
 
+// ============ 3 · fotogramas para el GIF ============
+{
+  const { ctx, page } = await open({ width: 1100, height: 700 }, 1);
   let f = 0;
   const frame = async (hold = 1) => {
-    await page.evaluate(() => window.scrollTo(0, 0));
     for (let i = 0; i < hold; i++) {
       f++;
       await page.screenshot({ path: join(FRAMES, `${String(f).padStart(3, '0')}.png`) });
     }
     process.stdout.write(`\r  ${f} fotogramas`);
   };
+  const roll = async (n, ms = 260) => {
+    for (let i = 0; i < n; i++) { await wait(ms); await frame(); }
+  };
 
-  await frame(3); // portada
+  await frame(4); // portada
 
-  // conectar MIDI ya (para que el panel salga en todo el GIF)
-  await page.setInputFiles('#file', DEMO);
-  await page.waitForSelector('#track-list li');
-  await wait(400);
-  await page.click('#midi-connect');
-  await page.waitForSelector('#midi-controls:not([hidden])');
-  await page.selectOption('#midi-device', 'jt-mini');
-  await wait(300);
-  await frame(4); // app cargada con salida MIDI
+  await load(page);
+  await frame(4); // archivo cargado: su nombre como título
 
-  // reproducir: se iluminan las pistas (verde = PC)
-  await page.click('#track-list li:last-child .locate');
-  for (let i = 0; i < 8; i++) { await wait(430); await frame(1); }
-
-  // EXT: mandar una pista al teclado (se pone lila, el resto sigue en verde)
-  await page.click('#track-list li:nth-child(3) .ext-btn');
-  for (let i = 0; i < 7; i++) { await wait(430); await frame(1); }
-
-  // solo en una pista de PC (no afecta a la que va al teclado)
-  await page.click('#track-list li:first-child .solo-btn');
-  for (let i = 0; i < 5; i++) { await wait(430); await frame(1); }
-  await page.click('#track-list li:first-child .solo-btn');
-  await page.click('#track-list li:nth-child(3) .ext-btn'); // quitar EXT
-  await page.click('#stop');
-  await wait(200);
+  await scrollTo(page, '#pistas');
   await frame(2);
 
-  // renombrar una pista
-  const ni = page.locator('#track-list li:first-child .tname-input');
-  await ni.click();
-  await ni.fill('');
-  for (const ch of 'Piano principal') {
-    await ni.press(ch === ' ' ? 'Space' : ch);
-    await frame(1);
-  }
-  await page.keyboard.press('Tab');
-  await frame(5);
+  // reproducir: las pistas con nota en curso se encienden y el fondo dibuja su onda
+  await dockBtn(page, 'Repetir en bucle').click();
+  await play(page);
+  await roll(16);
+
+  // solo en una pista
+  await trackBtn(page, 1, 1).click();
+  await roll(7);
+  await trackBtn(page, 1, 1).click();
+
+  // silenciar otra
+  await trackBtn(page, 2, 2).click();
+  await roll(7);
+  await trackBtn(page, 2, 2).click();
+  await roll(3);
+
+  // pantalla completa: solo las visuales; un toque en el lienzo cambia el estilo
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.click('.mts__full');
+  await roll(12);
+  await page.click('.mts__bg');
+  await roll(9);
+  await page.click('.mts__bg');
+  await roll(9);
 
   await ctx.close();
 }
 
 await browser.close();
 srv.kill();
-console.log('\n\ncapturas: docs/shots/   fotogramas: docs/frames/');
+console.log('\n');
+
+// ============ 4 · GIF ============
+const ff = spawnSync('ffmpeg', [
+  '-y', '-loglevel', 'error', '-framerate', '5', '-i', join(FRAMES, '%03d.png'),
+  '-vf', 'scale=760:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=16:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle',
+  GIF,
+], { stdio: 'inherit' });
+console.log(ff.status === 0
+  ? 'capturas: docs/shots/   GIF: docs/demo.gif'
+  : 'capturas: docs/shots/   fotogramas: docs/frames/   (sin ffmpeg no se ha generado el GIF)');

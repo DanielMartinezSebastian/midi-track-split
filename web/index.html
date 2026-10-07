@@ -6,7 +6,7 @@
   <title>MIDI Track Split</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="fonts/fonts.css" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="app.css" />
   <script type="importmap">
   {
     "imports": {
@@ -20,118 +20,7 @@
   </script>
 </head>
 <body>
-  <main>
-    <header class="app-head">
-      <h1><img class="logo-mark" src="favicon.svg" alt="" width="56" height="56" /><span class="logo-text">MIDI Track Split</span></h1>
-      <p class="sub">Separa un archivo MIDI en pistas individuales, escúchalo y descárgalas.</p>
-    </header>
-
-    <div id="drop" class="drop">
-      <p id="filename" class="filename"></p>
-      <p class="drop-hint drop-hint--empty"><strong>Arrastra un archivo .mid aquí</strong></p>
-      <p class="drop-hint drop-hint--more">Arrastra otro archivo, o</p>
-      <p class="drop-or">o</p>
-      <label class="btn">
-        Elegir archivo
-        <input id="file" type="file" accept=".mid,.midi,audio/midi" hidden />
-      </label>
-    </div>
-
-    <section id="player" class="card" hidden>
-      <div class="player-row">
-        <button id="play" class="btn">▶ Reproducir</button>
-        <button id="stop" class="btn ghost">■ Parar</button>
-        <button id="loop" type="button" class="btn ghost icon-btn" aria-pressed="false"
-                title="Repetir en bucle" aria-label="Repetir en bucle">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-            <polyline points="17 1 21 5 17 9" />
-            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-            <polyline points="7 23 3 19 7 15" />
-            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-          </svg>
-        </button>
-        <button id="mute-all" type="button" class="btn ghost icon-btn" aria-pressed="false"
-                title="Silenciar todo el sonido (interno y externo)" aria-label="Silenciar todo el sonido (interno y externo)">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path class="fill" d="M3 9v6h4l5 4V5L7 9H3z" />
-            <path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7" />
-            <path class="wave" d="M18.6 5.4a9 9 0 0 1 0 13.2" />
-            <line class="slash" x1="2" y1="2" x2="22" y2="22" />
-          </svg>
-        </button>
-        <span id="status" class="status"></span>
-        <span id="time" class="time">0:00 / 0:00</span>
-      </div>
-      <div id="progress" class="progress" role="slider" tabindex="0"
-           aria-label="Posición de reproducción" aria-valuemin="0" aria-valuenow="0">
-        <div id="bar"></div>
-      </div>
-      <p class="hint">Arrastra sobre la barra para moverte por la canción. Las pistas que suenan se iluminan (verde = en el PC, lila = al teclado MIDI).<br>Cada pista usa su instrumento General MIDI (muestras reales); la percusión se aproxima con una caja de ritmos.</p>
-
-      <div class="midi-out">
-        <button id="midi-connect" type="button" class="btn ghost">Enviar a teclado MIDI…</button>
-        <div id="midi-controls" hidden>
-          <label class="midi-field">Dispositivo
-            <select id="midi-device"><option value="">— ninguno —</option></select>
-          </label>
-          <label class="midi-field">Canal
-            <select id="midi-channel"></select>
-          </label>
-          <div class="midi-mutes">
-            <button id="midi-mute-internal" type="button" class="btn ghost icon-btn"
-                    title="Silenciar sonido interno (PC)" aria-label="Silenciar sonido interno (PC)" aria-pressed="false">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path class="fill" d="M3 9v6h4l5 4V5L7 9H3z" />
-                <path class="wave" d="M15.5 8.5a5 5 0 0 1 0 7" />
-                <path class="wave" d="M18.6 5.4a9 9 0 0 1 0 13.2" />
-                <line class="slash" x1="2" y1="2" x2="22" y2="22" />
-              </svg>
-            </button>
-            <button id="midi-mute-external" type="button" class="btn ghost icon-btn"
-                    title="Silenciar salida al teclado MIDI" aria-label="Silenciar salida al teclado MIDI" aria-pressed="false">
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="2.5" y="6.5" width="19" height="11" rx="1" />
-                <rect class="fill" x="5.3" y="6.5" width="2.6" height="6.6" />
-                <rect class="fill" x="10.7" y="6.5" width="2.6" height="6.6" />
-                <rect class="fill" x="16.1" y="6.5" width="2.6" height="6.6" />
-                <line class="slash" x1="2" y1="2" x2="22" y2="22" />
-              </svg>
-            </button>
-          </div>
-          <button id="midi-rescan" type="button" class="btn ghost midi-rescan">Buscar de nuevo</button>
-        </div>
-        <p id="midi-status" class="hint"></p>
-      </div>
-    </section>
-
-    <section id="tracks" class="card" hidden>
-      <div class="tracks-head">
-        <h2>Pistas</h2>
-        <div class="export-btns">
-          <button id="merge" type="button" class="btn">⬇ MIDI combinado</button>
-          <button id="zip" type="button" class="btn ghost">⬇ Pistas (.zip)</button>
-        </div>
-      </div>
-      <p class="hint" style="margin-top:0">Clic en el nombre para renombrar · <strong>S</strong> escucha solo esa pista (en el PC) · <strong>MUTE</strong> la silencia · <strong>EXT</strong> la envía solo al teclado MIDI y deja de sonar en el PC · <strong>MIDI combinado</strong> descarga un solo <code>.mid</code> sin las pistas silenciadas.</p>
-      <ul id="track-list"></ul>
-    </section>
-
-    <section id="soundbanks" class="card" hidden>
-      <h2>Bancos de sonido</h2>
-      <p class="hint" style="margin-top:0">Elige con qué muestras se reproduce cada tipo de instrumento.</p>
-      <div class="bank-fields">
-        <label class="midi-field">Batería
-          <select id="bank-drums"></select>
-        </label>
-        <label class="midi-field">Otros instrumentos
-          <select id="bank-kit"></select>
-        </label>
-      </div>
-    </section>
-
-    <p id="error" class="error" hidden></p>
-  </main>
-
+  <div id="root"></div>
   <script type="module" src="app.js"></script>
 </body>
 </html>

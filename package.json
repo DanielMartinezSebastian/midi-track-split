@@ -26,9 +26,11 @@
     "build:vendor": "node scripts/build-vendor.mjs",
     "fetch-fonts": "node scripts/fetch-fonts.mjs",
     "fetch-sounds": "node scripts/fetch-sounds.mjs",
-    "setup:assets": "npm run build:vendor && npm run fetch-fonts",
+    "setup:assets": "npm run build:vendor && npm run fetch-fonts && npm run build:ui",
     "sample": "node scripts/make-sample.js",
-    "capture": "node scripts/capture.mjs"
+    "capture": "node scripts/capture.mjs",
+    "build:ui": "node scripts/build-ui.mjs",
+    "dev:ui": "node scripts/build-ui.mjs --watch"
   },
   "keywords": [
     "midi",
@@ -45,9 +47,17 @@
     "selfsigned": "^5.5.0"
   },
   "devDependencies": {
+    "@react-three/fiber": "^9.8.1",
     "@tonejs/midi": "^2.0.28",
     "esbuild": "^0.28.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "smplr": "^1.0.0",
-    "tone": "^15.1.22"
+    "three": "^0.186.1",
+    "tone": "^15.1.22",
+    "trama-ui": "file:scripts/vendor-pkg/trama-ui-0.12.0.tgz"
+  },
+  "overrides": {
+    "pixelarticons": "2.4.1"
   }
 }

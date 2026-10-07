@@ -8,8 +8,10 @@ import { join } from 'node:path';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dir = join(root, 'web', 'fonts');
 
+// Inter y JetBrains Mono: las tipografías del tema de la interfaz (ui/app.css).
+// Son fuentes variables: un solo archivo cubre todo el rango de pesos.
 const CSS_URL =
-  'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap';
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=JetBrains+Mono:wght@400..700&display=swap';
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36';
 
@@ -23,13 +25,13 @@ for (const block of css.split('@font-face').slice(1)) {
   const range = (block.match(/unicode-range:\s*([^;]+);/) || [])[1] || '';
   if (!range.includes('U+0000-00FF')) continue; // solo subconjunto latino
   const family = (block.match(/font-family:\s*'([^']+)'/) || [])[1];
-  const weight = (block.match(/font-weight:\s*(\d+)/) || [])[1];
+  const weight = (block.match(/font-weight:\s*(\d+(?: \d+)?)/) || [])[1]; // «400 900» en las variables
   const url = (block.match(/url\(([^)]+)\)\s*format\('woff2'\)/) || [])[1];
   if (!family || !weight || !url) continue;
   const key = `${family}-${weight}`;
   if (seen.has(key)) continue;
   seen.add(key);
-  const file = `${family.replace(/\s+/g, '')}-${weight}.woff2`.toLowerCase();
+  const file = `${family.replace(/\s+/g, '')}-${weight.replace(' ', '-')}.woff2`.toLowerCase();
   const buf = new Uint8Array(await fetch(url).then((r) => r.arrayBuffer()));
   await writeFile(join(dir, file), buf);
   console.log(`  web/fonts/${file}  ${(buf.length / 1024).toFixed(1)} KB`);
