@@ -197,7 +197,7 @@ export default function App() {
 
       <div className="mts__footer">
         <Footer brand="MIDI TRACK SPLIT" tagline="" columns="" social="" copyright="MIT · Daniel Martínez Sebastián" variant="minimal" />
-        <a className="mts__site" href="https://www.martinezsebastian.com" target="_blank" rel="noopener">martinezsebastian.com ↗</a>
+        <a className="mts__site" href="https://www.martinezsebastian.com/herramientas/midi-track-split" target="_blank" rel="noopener">martinezsebastian.com ↗</a>
       </div>
 
       {s.loaded && <Transport s={s} />}
