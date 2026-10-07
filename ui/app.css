@@ -199,3 +199,6 @@ body { margin: 0; }
 .mts__site { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; font: 700 12px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--fg); }
 .mts__site:hover { color: var(--bg); background: var(--fg); }
 .mts__site:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+/* a pantalla completa no hay secciones a las que ir: sin hamburguesa, y el botón de salir ocupa su sitio */
+.mts--visual .mts__nav .ui-nav__burger, .mts--visual .mts__nav .ui-nav__sheet { display: none; }
+.mts--visual .mts__nav .mts__full { transform: none; }
