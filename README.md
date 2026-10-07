@@ -6,6 +6,8 @@ Incluye una **CLI** y una **interfaz web** (arrastrar/soltar, reproducción y de
 Cada pista de salida es un `.mid` independiente que conserva el mapa global de
 la canción (tempo, compás, tonalidad) para que suene igual que el original.
 
+**Demo en vivo:** <https://miditracksplit.martinezsebastian.com>
+
 ![Demo de la interfaz web](docs/demo.gif)
 
 ## Requisitos

@@ -5,7 +5,7 @@
   "type": "module",
   "author": "Daniel Martínez Sebastián (https://github.com/DanielMartinezSebastian)",
   "license": "MIT",
-  "homepage": "https://github.com/DanielMartinezSebastian/midi-track-split#readme",
+  "homepage": "https://miditracksplit.martinezsebastian.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DanielMartinezSebastian/midi-track-split.git"
