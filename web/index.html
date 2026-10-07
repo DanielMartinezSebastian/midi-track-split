@@ -49,9 +49,15 @@
        lo de debajo es contenido estático, que se lee sin JavaScript. -->
   <div id="root"></div>
 
-  <main class="info" id="info">
-    <p class="info__label">Qué es</p>
-    <h1>Separar pistas MIDI online</h1>
+  <main class="info">
+    <!-- Plegable: abierto de entrada (y sin JavaScript); la app lo pliega al cargar un archivo -->
+    <details class="info__fold" id="info" open>
+    <summary>
+      <span class="info__label">Qué es</span>
+      <h1>Separar pistas MIDI online</h1>
+      <span class="info__mark" aria-hidden="true"></span>
+    </summary>
+    <div class="info__body">
     <p class="info__lead">MIDI Track Split es una herramienta gratuita para <strong>separar las pistas de un archivo MIDI</strong> directamente en el navegador. Cargas un <code>.mid</code>, lo divide en una pista por instrumento, puedes escucharlas juntas o por separado y descargarlas. No hay que instalar nada ni crear una cuenta.</p>
 
     <section>
@@ -105,20 +111,22 @@
       <h2>Más sobre el proyecto</h2>
       <p>También hay una versión de línea de comandos para separar pistas MIDI desde la terminal. El código está en <a href="https://github.com/DanielMartinezSebastian/midi-track-split" rel="noopener">GitHub</a> y la historia del proyecto en su <a href="https://www.martinezsebastian.com/herramientas/midi-track-split">ficha en martinezsebastian.com</a>. La herramienta también está disponible en <a href="/en/" hreflang="en">inglés</a> y en <a href="/de/" hreflang="de">alemán</a>.</p>
     </section>
+    </div>
+    </details>
   </main>
 
   <footer class="info-foot">
-    <strong>MIDI Track Split</strong>
-    <p>
-      Hecho por <a href="https://www.martinezsebastian.com" rel="author">Daniel Martínez Sebastián</a> · Licencia MIT ·
-      Actualizado en <time datetime="2026-10-07">octubre de 2026</time>
-    </p>
+    <div class="info-foot__who">
+      <strong>MIDI Track Split</strong>
+      <p>Hecho por <a href="https://www.martinezsebastian.com" rel="author">Daniel Martínez Sebastián</a></p>
+    </div>
     <nav class="info-foot__langs" aria-label="Idiomas">
       <span aria-current="page">Español</span>
       <a href="/en/" hreflang="en" lang="en">English</a>
       <a href="/de/" hreflang="de" lang="de">Deutsch</a>
     </nav>
     <a class="info-foot__site" href="https://www.martinezsebastian.com/herramientas/midi-track-split">martinezsebastian.com ↗</a>
+    <p class="info-foot__small">Licencia MIT · Actualizado en <time datetime="2026-10-07">octubre de 2026</time></p>
   </footer>
 
   <noscript><p class="info-noscript">La herramienta necesita JavaScript para cargar, reproducir y separar el archivo MIDI.</p></noscript>

@@ -98,9 +98,15 @@ const page = (p) => `<!doctype html>
        lo de debajo es contenido estático, que se lee sin JavaScript. -->
   <div id="root"></div>
 
-  <main class="info" id="info">
-    <p class="info__label">${p.label}</p>
-    <h1>${p.h1}</h1>
+  <main class="info">
+    <!-- Plegable: abierto de entrada (y sin JavaScript); la app lo pliega al cargar un archivo -->
+    <details class="info__fold" id="info" open>
+    <summary>
+      <span class="info__label">${p.label}</span>
+      <h1>${p.h1}</h1>
+      <span class="info__mark" aria-hidden="true"></span>
+    </summary>
+    <div class="info__body">
     <p class="info__lead">${p.lead}</p>
 ${p.sections.map((s) => `
     <section>
@@ -117,18 +123,20 @@ ${p.faq.map(([q, a]) => `      <h3>${q}</h3>\n      <p>${a}</p>`).join('\n')}
       <h2>${p.moreTitle}</h2>
       <p>${p.more}</p>
     </section>
+    </div>
+    </details>
   </main>
 
   <footer class="info-foot">
-    <strong>MIDI Track Split</strong>
-    <p>
-      ${p.foot.by} <a href="${AUTHOR_URL}" rel="author">Daniel Martínez Sebastián</a> · ${p.foot.license} ·
-      ${p.foot.updated} <time datetime="${UPDATED}">${p.foot.date}</time>
-    </p>
+    <div class="info-foot__who">
+      <strong>MIDI Track Split</strong>
+      <p>${p.foot.by} <a href="${AUTHOR_URL}" rel="author">Daniel Martínez Sebastián</a></p>
+    </div>
     <nav class="info-foot__langs" aria-label="${p.foot.langs}">
       ${PAGES.map((o) => (o === p ? `<span aria-current="page">${o.name}</span>` : `<a href="${o.path}" hreflang="${o.lang}" lang="${o.lang}">${o.name}</a>`)).join('\n      ')}
     </nav>
     <a class="info-foot__site" href="${PROJECT_URL}">martinezsebastian.com ↗</a>
+    <p class="info-foot__small">${p.foot.license} · ${p.foot.updated} <time datetime="${UPDATED}">${p.foot.date}</time></p>
   </footer>
 
   <noscript><p class="info-noscript">${p.noscript}</p></noscript>

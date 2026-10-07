@@ -74,6 +74,13 @@ export default function App() {
     if (s.error) toast(s.error.message, { toasterId: TOAST_ID, duration: 8000 });
   }, [s.error]);
 
+  // El texto explicativo de la página (HTML estático, bajo la app) se pliega al cargar un archivo:
+  // con las pistas delante ya no hace falta, y se puede volver a abrir a mano.
+  useEffect(() => {
+    const fold = document.getElementById('info');
+    if (fold) fold.open = !s.loaded;
+  }, [s.loaded]);
+
   const pickFile = () => fileInput.current?.click();
   const go = (item) => {
     // sin archivo, el menú solo ofrece cargar uno
