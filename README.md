@@ -120,7 +120,7 @@ Todo vive en el proyecto para no depender de internet:
 | Recurso | Dónde | Se regenera con |
 | --- | --- | --- |
 | Librerías JS (`tone`, `smplr`, `jszip`, `@tonejs/midi`, `midi-file`) | `web/vendor/*.js` (versionado, ~560 KB) | `npm run build:vendor` |
-| Interfaz empaquetada (React + `trama-ui` + three.js) | `web/app.js` y `web/app.css` (versionado, ~1,4 MB) | `npm run build:ui` |
+| Interfaz empaquetada (React + `trama-ui` + three.js) | `web/app.js`, `web/app.css` y `web/chunks/` (versionado, ~1,5 MB) | `npm run build:ui` |
 | Fuentes (woff2 + `fonts.css`) | `web/fonts/` (versionado, ~80 KB) | `npm run fetch-fonts` |
 | Muestras de instrumentos + batería | `web/soundfonts/` (**no** versionado) | `npm run fetch-sounds` |
 

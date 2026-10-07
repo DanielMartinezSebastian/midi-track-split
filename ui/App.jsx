@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { lazy, memo, Suspense, useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { toast } from 'sonner';
 import Button from 'trama-ui/Button';
 import Marquee from 'trama-ui/Marquee';
@@ -8,7 +8,9 @@ import Toast from 'trama-ui/Toast';
 import Tooltip from 'trama-ui/Tooltip';
 import { tokensToStyle } from 'trama-ui/tokens';
 import * as engine from './engine.js';
-import Stage from './Stage.jsx';
+// El fondo 3D (three.js, react-three-fiber y RetroCanvas) pesa más que el resto de la app junta:
+// va en un trozo aparte que se descarga después de pintar la interfaz.
+const Stage = lazy(() => import('./Stage.jsx'));
 
 // Tema: el de la landing SILO de Trama. Negro, blanco y un solo gris; sin
 // superficies ni radios. El único ornamento es el fondo (RetroCanvas).
@@ -76,7 +78,9 @@ export default function App() {
 
   return (
     <div className={`mts ${s.loaded ? 'mts--loaded' : ''} ${s.playing ? 'mts--playing' : ''} ${visual ? 'mts--visual' : ''} ${BARE ? 'mts--bare' : ''}`} style={TOKENS}>
-      <Stage kinds={s.tracks.map((t) => (t.drum ? 'd' : 's')).join('')} shift={lookShift} onTap={visual ? nextLook : undefined} />
+      <Suspense fallback={null}>
+        <Stage kinds={s.tracks.map((t) => (t.drum ? 'd' : 's')).join('')} shift={lookShift} onTap={visual ? nextLook : undefined} />
+      </Suspense>
       <Toast id={TOAST_ID} position="top-center" variant="minimal" intentStyle="mono" icons="none" showTrigger={false} />
       <input
         ref={fileInput}
