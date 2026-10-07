@@ -180,7 +180,7 @@ body { margin: 0; }
 .mts__nav:has(.ui-nav__burger) .mts__full { transform: translateX(-44px); }
 
 /* menú móvil (hamburguesa): un panel negro a todo el ancho bajo la cabecera, con enlaces grandes para el dedo */
-.mts__nav .ui-nav__sheet { position: fixed; top: 64px; left: 0; right: 0; width: auto; margin: 0; padding: 4px var(--gutter) 12px; background: var(--bg) !important; border: 0; border-block: 1px solid var(--ln); border-radius: 0; box-shadow: none; }
+.mts__nav .ui-nav__sheet { position: fixed; top: 69px; left: 0; right: 0; width: auto; margin: 0; padding: 4px var(--gutter) 12px; background: var(--bg) !important; border: 0; border-block: 1px solid var(--ln); border-radius: 0; box-shadow: none; }
 .mts__nav .ui-nav__mlinks { display: grid; margin: 0; padding: 0; list-style: none; }
 .mts__nav .ui-nav__sheet .ui-nav__link { display: flex; align-items: center; min-height: 52px; padding: 0; font: 700 14px/1 var(--mono); letter-spacing: 0.28em; color: var(--fg); border-bottom: 1px solid var(--ln); }
 .mts__nav .ui-nav__mlinks li:last-child .ui-nav__link { border-bottom: 0; }
@@ -291,3 +291,10 @@ body:has(.mts--visual) .info, body:has(.mts--visual) .info-foot, body:has(.mts--
 :root[data-theme="light"] .mts__nav .ui-nav__brand::before { filter: invert(1); }
 .mts__theme .fill { fill: currentColor; stroke: none; }
 .mts__hero-side .mts__theme { z-index: 6; }
+
+/* ---------- cabecera: una franja de lado a lado. El fondo lo pone la cabecera entera (no la barra de
+   Trama, que solo ocupa su parte y dejaba fuera la hamburguesa y el botón de pantalla completa) ---------- */
+.mts__nav { padding-bottom: 10px; background: color-mix(in srgb, var(--bg) 90%, transparent); border-bottom: 1px solid var(--ln); }
+.mts__nav > :first-child, .mts__nav .ui-nav__bar, .mts__nav .ui-nav__inner, .mts__nav .ui-nav__row { background: none !important; border-color: transparent; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+/* a pantalla completa, sin franja: solo los iconos sobre las visuales */
+.mts--visual .mts__nav { background: none; border-bottom-color: transparent; }
