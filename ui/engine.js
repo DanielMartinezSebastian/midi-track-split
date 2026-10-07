@@ -133,7 +133,7 @@ export function fmt(sec) {
 function download(data, name, type = 'audio/midi') {
   const blob = data instanceof Blob ? data : new Blob([data], { type });
   const url = URL.createObjectURL(blob);
-  const a = document.createElemeni18n('a');
+  const a = document.createElement('a');
   a.href = url;
   a.download = name;
   a.click();
