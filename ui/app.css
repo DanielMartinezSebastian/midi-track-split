@@ -162,7 +162,7 @@ body { margin: 0; }
 
 
 /* ---------- pantalla completa: solo el fondo, con la cabecera y el transporte para poder volver y reproducir ---------- */
-.mts__full { position: relative; z-index: 2; flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 0; background: none; color: var(--fg); cursor: pointer; touch-action: manipulation; }
+.mts__full { position: relative; z-index: 100; flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 0; background: none; color: var(--fg); cursor: pointer; touch-action: manipulation; }
 .mts__full:hover { opacity: 0.7; }
 .mts__full:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 .mts__full svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; }
