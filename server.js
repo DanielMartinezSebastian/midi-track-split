@@ -21,6 +21,7 @@ const TYPES = {
   '.json': 'application/json',
   '.mid': 'audio/midi',
   '.svg': 'image/svg+xml',
+  '.png': 'image/png',
   '.woff2': 'font/woff2',
   '.ogg': 'audio/ogg',
   '.m4a': 'audio/mp4',
