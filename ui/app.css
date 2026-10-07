@@ -199,9 +199,10 @@ body { margin: 0; }
   .mts__pick .mts__label { display: none; } /* en un teléfono no se arrastran archivos */
 }
 
-/* ---------- logo (web/favicon.svg) junto a la marca, y enlace a la web del autor en el pie ---------- */
+/* ---------- logo (web/logo.svg) junto a la marca, y enlace a la web del autor en el pie ---------- */
 .mts__nav .ui-nav__brand { display: inline-flex; align-items: center; gap: 12px; }
-.mts__nav .ui-nav__brand::before { content: ""; flex: none; width: 22px; height: 22px; background: url("favicon.svg") center / contain no-repeat; }
+/* el dibujo (web/logo.svg, sin fondo) se usa como máscara: toma el color del texto en cualquier tema */
+.mts__nav .ui-nav__brand::before { content: ""; flex: none; width: 24px; height: 24px; background: currentColor; -webkit-mask: url("logo.svg") center / contain no-repeat; mask: url("logo.svg") center / contain no-repeat; }
 .mts__site { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; font: 700 12px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--fg); }
 .mts__site:hover { color: var(--bg); background: var(--fg); }
 .mts__site:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
@@ -287,8 +288,6 @@ body:has(.mts--visual) .info, body:has(.mts--visual) .info-foot, body:has(.mts--
 
 /* ---------- tema claro: el mismo diseño en negativo (botón de la portada; se recuerda) ---------- */
 :root[data-theme="light"] { color-scheme: light; --p-bg: #f2f2f2; --p-fg: #0a0a0a; --p-soft: #262626; --p-mut: #5e5e5e; --p-ln: rgba(0, 0, 0, 0.18); }
-/* el logo es blanco sobre negro: en claro se invierte */
-:root[data-theme="light"] .mts__nav .ui-nav__brand::before { filter: invert(1); }
 .mts__theme .fill { fill: currentColor; stroke: none; }
 .mts__hero-side .mts__theme { z-index: 6; }
 
@@ -298,3 +297,7 @@ body:has(.mts--visual) .info, body:has(.mts--visual) .info-foot, body:has(.mts--
 .mts__nav > :first-child, .mts__nav .ui-nav__bar, .mts__nav .ui-nav__inner, .mts__nav .ui-nav__row { background: none !important; border-color: transparent; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 /* a pantalla completa, sin franja: solo los iconos sobre las visuales */
 .mts--visual .mts__nav { background: none; border-bottom-color: transparent; }
+
+/* ---------- sin sombras de texto: el kit las añade para leer sobre fondos con imagen; aquí el texto va
+   siempre sobre un color plano y, en tema claro, la sombra oscura lo emborrona ---------- */
+*, *::before, *::after { text-shadow: none !important; }

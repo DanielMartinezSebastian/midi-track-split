@@ -22,7 +22,7 @@ const options = {
   target: 'es2020',
   jsx: 'automatic',
   // las librerías de web/vendor/ (import map) y los recursos que el CSS pide por URL quedan fuera
-  external: ['tone', '@tonejs/midi', 'smplr', 'jszip', 'midi-file', 'favicon.svg'],
+  external: ['tone', '@tonejs/midi', 'smplr', 'jszip', 'midi-file', 'favicon.svg', 'logo.svg'],
   define: { 'process.env.NODE_ENV': watch ? '"development"' : '"production"' },
   minify: !watch,
   sourcemap: watch ? 'inline' : false,
