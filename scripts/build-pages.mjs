@@ -77,6 +77,8 @@ const page = (p) => `<!doctype html>
   <meta name="twitter:title" content="${esc(p.title)}" />
   <meta name="twitter:description" content="${esc(p.desc)}" />
   <meta name="twitter:image" content="${og(p)}" />
+  <meta name="color-scheme" content="dark light" />
+  <script>try{if(localStorage.getItem('mts.theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/fonts.css" />
   <link rel="stylesheet" href="/app.css" />

@@ -113,6 +113,12 @@ fuera de un solo retira su pieza. El botón de pantalla completa de la cabecera 
 interfaz y deja solo las visuales; ahí, un toque en el lienzo cambia el estilo de render
 (con un archivo cargado también vale tocar su nombre).
 
+Hay cuatro escenas para el fondo, que se cambian con el botón «Visual» de la portada (o el
+icono de capas a pantalla completa) y se recuerdan entre visitas: **Anillos** (la descrita),
+**Espectro** (un aro de barras por pista), **Terreno** (el espectro de la mezcla convertido en
+relieve) y **Notas** (las notas del MIDI viniendo de frente, una fila por pista). A pantalla
+completa, arrastrar con el dedo o el ratón gira la escena. También hay tema claro y oscuro.
+
 ## Recursos locales (sin CDN)
 
 Todo vive en el proyecto para no depender de internet:

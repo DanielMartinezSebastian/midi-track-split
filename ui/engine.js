@@ -26,7 +26,6 @@ const state = {
   tracks: [],   // resultado de splitMidi
   parts: [],    // { notes, muted, solo, toExternal, gain, spec, inst, part }
   duration: 0,
-  cues: [],     // instantes (s) en que el fondo cambia de etapa
   timer: 0,
   playing: false,
   status: '',
@@ -229,8 +228,6 @@ function buildPlayer(arrayBuffer) {
 
       return entry;
     });
-
-  state.cues = buildCues(state.parts, state.duration);
 
   Tone.getTransport().stop();
   Tone.getTransport().position = 0;
@@ -497,48 +494,41 @@ export function readWave(i, out) {
   for (let n = 0; n < out.length; n++) out[n] = 0.3 * level * Math.sin(step * n);
 }
 
-// Etapas del fondo: las propias notas marcan cuándo cambia de aspecto. Hay un cambio cada
-// vez que una pista entra (su primera nota, o la primera tras 1,5 s callada), con 16 s
-// como mínimo entre cambios; en los tramos sin entradas se añade uno cada 30 s.
-function buildCues(parts, duration) {
-  const entries = [];
-  for (const p of parts) {
-    let end = -Infinity;
-    for (const n of p.notes) {
-      if (n.time - end >= 1.5) entries.push(n.time);
-      end = Math.max(end, n.time + n.duration);
+// Espectro de la pista i en `out` (BANDS valores de 0 a 1, de graves a agudos, en escala
+// logarítmica entre 40 Hz y 8 kHz). Como en readWave, una pista sin audio en el PC dibuja
+// en su lugar un pico en la banda de su nota.
+export const BANDS = 32;
+const SPAN = 200; // 40 Hz × 200 = 8 kHz
+let bins = null;
+export function readBands(i, out) {
+  out.fill(0);
+  const p = state.parts[i];
+  if (!p) return;
+  if (!routedToExt(p) && !state.internalMuted) {
+    if (!bins) bins = new Uint8Array(WAVE_SIZE / 2);
+    p.analyser.getByteFrequencyData(bins);
+    const hzPerBin = sampleRate() / WAVE_SIZE;
+    for (let b = 0; b < BANDS; b++) {
+      const from = Math.floor((40 * SPAN ** (b / BANDS)) / hzPerBin);
+      const to = Math.max(from + 1, Math.ceil((40 * SPAN ** ((b + 1) / BANDS)) / hzPerBin));
+      let max = 0;
+      for (let k = from; k < to && k < bins.length; k++) if (bins[k] > max) max = bins[k];
+      out[b] = max / 255;
     }
+    return;
   }
-  entries.sort((a, b) => a - b);
-
-  const cues = [];
-  let last = 0;
-  const fillUntil = (t) => {
-    while (t - last > 40) {
-      last += 30;
-      cues.push(last);
-    }
-  };
-  for (const t of entries) {
-    fillUntil(t);
-    if (t - last >= 16) {
-      cues.push(t);
-      last = t;
-    }
-  }
-  fillUntil(duration);
-  return cues;
+  const level = pulse.levels[i] || 0;
+  const midi = pulse.pitch[i];
+  if (!level || !midi) return;
+  const b = Math.round((BANDS * Math.log(pitchToHz(midi) / 40)) / Math.log(SPAN));
+  for (let d = -2; d <= 2; d++) if (b + d >= 0 && b + d < BANDS) out[b + d] = level * (d ? 0.5 / Math.abs(d) : 1);
 }
 
-// Etapa en la que está el cabezal: cuántos cambios lleva la canción hasta ese punto.
-// Depende solo de la posición, así que al saltar por la barra el aspecto es coherente.
-export function getStage() {
-  if (!state.parts.length) return 0;
-  const cur = Tone.getTransport().seconds;
-  let n = 0;
-  while (n < state.cues.length && state.cues[n] <= cur) n++;
-  return n;
-}
+// Para las escenas que dibujan las notas: las de la pista i (ordenadas por tiempo) y la
+// posición del cabezal en segundos.
+const NO_NOTES = [];
+export const trackNotes = (i) => state.parts[i]?.notes || NO_NOTES;
+export const playhead = () => (state.parts.length ? Math.min(Tone.getTransport().seconds, state.duration) : 0);
 
 // ---------- silenciar / solo / salida por pista ----------
 

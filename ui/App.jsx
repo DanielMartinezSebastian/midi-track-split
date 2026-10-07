@@ -15,18 +15,16 @@ const Stage = lazy(() => import('./Stage.jsx'));
 
 // Tema: el de la landing SILO de Trama. Negro, blanco y un solo gris; sin
 // superficies ni radios. El único ornamento es el fondo (RetroCanvas).
-const TOKENS = tokensToStyle({
-  bg: '#000000',
-  fg: '#f2f2f2',
-  mut: '#7a7a7a',
-  acc: '#ffffff',
-  acc2: '#7a7a7a',
-  card: 'transparent',
-  ln: 'rgba(255,255,255,0.14)',
-  r: 0,
-  font: 'var(--font-inter), ui-sans-serif, system-ui, sans-serif',
-  display: 'var(--font-inter), ui-sans-serif, system-ui, sans-serif',
-});
+const FONT = 'var(--font-inter), ui-sans-serif, system-ui, sans-serif';
+const TOKENS = {
+  dark: tokensToStyle({ bg: '#000000', fg: '#f2f2f2', mut: '#7a7a7a', acc: '#ffffff', acc2: '#7a7a7a', card: 'transparent', ln: 'rgba(255,255,255,0.14)', r: 0, font: FONT, display: FONT }),
+  // el mismo tema en negativo: papel claro y tinta negra
+  light: tokensToStyle({ bg: '#f2f2f2', fg: '#0a0a0a', mut: '#6a6a6a', acc: '#000000', acc2: '#6a6a6a', card: 'transparent', ln: 'rgba(0,0,0,0.18)', r: 0, font: FONT, display: FONT }),
+};
+// El tema elegido se guarda y se aplica en <html data-theme> (lo lee también el contenido estático
+// de la página; un script en el <head> lo pone antes de pintar para que no parpadee).
+const THEME_KEY = 'mts.theme';
+const initialTheme = () => (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
 
 const TOAST_ID = 'mts-toast';
 // `?bare` en la URL deja solo el fondo, sin interfaz
@@ -40,6 +38,20 @@ const rich = (text) =>
   text.split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((part, i) =>
     part.startsWith('**') ? <b key={i}>{part.slice(2, -2)}</b> : part.startsWith('`') ? <code key={i}>{part.slice(1, -1)}</code> : part
   );
+
+// Escenas del fondo, en el orden en que rota el botón. La elegida se recuerda entre visitas;
+// `?scene=nombre` en la URL la fija (pruebas y capturas).
+const SCENES = ['rings', 'spectrum', 'terrain', 'notes'];
+const SCENE_KEY = 'mts.scene';
+function initialScene() {
+  const asked = new URLSearchParams(location.search).get('scene');
+  if (SCENES.includes(asked)) return asked;
+  try {
+    const saved = localStorage.getItem(SCENE_KEY);
+    if (SCENES.includes(saved)) return saved;
+  } catch {}
+  return SCENES[0];
+}
 
 const useEngine = () => useSyncExternalStore(engine.subscribe, engine.getState);
 const useClock = () => useSyncExternalStore(engine.subscribeClock, engine.getClock);
@@ -55,6 +67,24 @@ export default function App() {
   // transporte. Donde el navegador lo permite, además pone la página a pantalla completa de verdad
   // (en iPhone no existe esa API: allí solo se oculta la interfaz).
   const [visual, setVisual] = useState(false);
+  const [theme, setTheme] = useState(initialTheme);
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem(THEME_KEY, next); } catch {}
+  };
+  const [scene, setScene] = useState(initialScene);
+  const nextScene = () => {
+    const next = SCENES[(SCENES.indexOf(scene) + 1) % SCENES.length];
+    setScene(next);
+    try { localStorage.setItem(SCENE_KEY, next); } catch {}
+  };
+  const sceneButton = (
+    <button type="button" className="mts__scene" aria-label={t('scene.aria', { name: t(`scene.${scene}`) })} onClick={nextScene}>
+      <span>{t('scene.label')}</span> {t(`scene.${scene}`)} <i aria-hidden="true">›</i>
+    </button>
+  );
   const toggleVisual = () => {
     const on = !visual;
     setVisual(on);
@@ -94,9 +124,9 @@ export default function App() {
   const title = s.loaded ? stem : 'SPLIT';
 
   return (
-    <div className={`mts ${s.loaded ? 'mts--loaded' : ''} ${s.playing ? 'mts--playing' : ''} ${visual ? 'mts--visual' : ''} ${BARE ? 'mts--bare' : ''}`} style={TOKENS}>
+    <div className={`mts ${s.loaded ? 'mts--loaded' : ''} ${s.playing ? 'mts--playing' : ''} ${visual ? 'mts--visual' : ''} ${BARE ? 'mts--bare' : ''}`} style={TOKENS[theme]}>
       <Suspense fallback={null}>
-        <Stage kinds={s.tracks.map((t) => (t.drum ? 'd' : 's')).join('')} shift={lookShift} onTap={visual ? nextLook : undefined} />
+        <Stage key={theme} scene={scene} kinds={s.tracks.map((t) => (t.drum ? 'd' : 's')).join('')} shift={lookShift} onTap={visual ? nextLook : undefined} />
       </Suspense>
       <Toast id={TOAST_ID} position="top-center" variant="minimal" intentStyle="mono" icons="none" showTrigger={false} />
       <input
@@ -126,6 +156,13 @@ export default function App() {
           onNavigate={go}
           defaultActive={-1}
         />
+        {visual && (
+          <button type="button" className="mts__full mts__scene-icon" aria-label={t('scene.aria', { name: t(`scene.${scene}`) })} onClick={nextScene}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5" />
+            </svg>
+          </button>
+        )}
         <button type="button" className="mts__full" aria-pressed={visual} aria-label={visual ? t('full.exit') : t('full.enter')} onClick={toggleVisual}>
           <svg viewBox="0 0 24 24" aria-hidden="true">
             {visual ? <path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6" /> : <path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6" />}
@@ -149,6 +186,14 @@ export default function App() {
               <Button label={s.loaded ? t('hero.change') : t('hero.pick')} glyph="↑" glyphPosition="start" variant="minimal" intent="neutral" size="lg" className={`mts__open ${s.loaded ? 'mts__open--again' : ''}`} onClick={pickFile} />
               <p className="mts__label">{t('hero.drag')}</p>
             </div>
+            <div className="mts__hero-side">
+            <button type="button" className="mts__full mts__theme" aria-label={theme === 'dark' ? t('theme.light') : t('theme.dark')} onClick={toggleTheme}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" />
+                <path className="fill" d="M12 3.5a8.5 8.5 0 0 1 0 17z" />
+              </svg>
+            </button>
+            {sceneButton}
             <p className="mts__label">
               {s.loaded ? (
                 <>
@@ -158,6 +203,7 @@ export default function App() {
                 t('hero.local')
               )}
             </p>
+            </div>
           </div>
         </section>
 

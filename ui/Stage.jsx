@@ -2,15 +2,15 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import RetroCanvas from 'trama-ui/RetroCanvas';
 import * as engine from './engine.js';
+import { Notes, Spectrum, Terrain } from './Scenes.jsx';
 
 const MAX_RINGS = 8;
 const CORE = 0.55;
 // puntos de la onda alrededor de cada anillo (y segmentos de su geometría)
 const SEG = 256;
 
-// Aspectos del filtro de RetroCanvas, todos monocromos. La canción los recorre en orden: cada etapa
-// (engine.getStage, marcada por las entradas de las pistas) pasa al siguiente, y `shift` (un toque en el
-// título del archivo) los adelanta a mano. El primero es el de reposo.
+// Aspectos del filtro de RetroCanvas, todos monocromos. Los elige el usuario: `shift` cuenta sus toques (en el
+// título del archivo o, a pantalla completa, en el lienzo) y cada uno pasa al siguiente. No cambian solos.
 const LOOKS = [
   { ramp: 'dots', cellSize: 3, cellAspect: 1 },
   { ramp: 'braille', cellSize: 6, cellAspect: 1.4 },
@@ -19,7 +19,28 @@ const LOOKS = [
 // al cambiar de aspecto, un golpe breve de glitch en vez de un fundido
 const BURST = { glitch: 0.7, aberration: 0.6 };
 const BURST_MS = 320;
-// `?look=N` en la URL fija un aspecto para verlo o ajustarlo sin esperar a su etapa
+// `?look=N` en la URL fija un aspecto (pruebas y capturas)
+// Giro a mano (a pantalla completa): arrastrar sobre el lienzo orbita la escena, con algo de inercia.
+// Vive fuera de React: lo escriben los eventos de puntero y lo lee el lienzo en cada fotograma.
+const orbit = { yaw: 0, pitch: 0, vyaw: 0, vpitch: 0, held: false };
+const TAP_SLOP = 8; // px: por debajo de esto, el gesto es un toque y no un arrastre
+
+function Orbit({ children }) {
+  const group = useRef(null);
+  useFrame((_, delta) => {
+    if (!orbit.held) {
+      // al soltar, sigue un poco y se frena
+      orbit.yaw += orbit.vyaw;
+      orbit.pitch = Math.max(-1.3, Math.min(1.3, orbit.pitch + orbit.vpitch));
+      const drag = Math.pow(0.02, Math.min(delta, 0.1));
+      orbit.vyaw *= drag;
+      orbit.vpitch *= drag;
+    }
+    if (group.current) group.current.rotation.set(orbit.pitch, orbit.yaw, 0);
+  });
+  return <group ref={group}>{children}</group>;
+}
+
 const FIXED_LOOK = Number(new URLSearchParams(location.search).get('look') ?? NaN);
 
 /**
@@ -27,17 +48,14 @@ const FIXED_LOOK = Number(new URLSearchParams(location.search).get('look') ?? Na
  * anillo, de dentro afuera en su orden. Solo se dibujan las pistas activas: silenciar una pista (o dejarla fuera de un
  * solo) retira su pieza. Cada anillo es la forma de onda real de su pista, enrollada en círculo, como un osciloscopio;
  * el núcleo crece con el volumen de la batería. El brillo de cada pieza sigue las notas de su pista.
- * `onTap`, si se pasa, convierte el lienzo en un botón (a pantalla completa, un toque cambia de aspecto).
+ * `scene` elige la escena: «rings» (esta, la original) o una de las de ui/Scenes.jsx.
+ * `onTap`, si se pasa, convierte el lienzo en un control (a pantalla completa): arrastrar gira la escena y un
+ * toque sin arrastre cambia de aspecto.
  * `kinds` describe las pistas: una letra por pista, «d» batería y «s» el resto. Sin archivo, tres anillos en reposo.
  */
-const Stage = memo(function Stage({ kinds, shift = 0, onTap }) {
-  const [stage, setStage] = useState(0);
+const Stage = memo(function Stage({ kinds, scene = 'rings', shift = 0, onTap }) {
   const [burst, setBurst] = useState(false);
-  useEffect(() => {
-    const id = setInterval(() => setStage(engine.getStage()), 120);
-    return () => clearInterval(id);
-  }, []);
-  const index = (Number.isInteger(FIXED_LOOK) ? FIXED_LOOK : stage + shift) % LOOKS.length;
+  const index = (Number.isInteger(FIXED_LOOK) ? FIXED_LOOK : shift) % LOOKS.length;
   const first = useRef(true);
   useEffect(() => {
     if (first.current) {
@@ -49,10 +67,46 @@ const Stage = memo(function Stage({ kinds, shift = 0, onTap }) {
     return () => clearTimeout(id);
   }, [index]);
 
+  // gestos sobre el lienzo, solo cuando hace de control (`onTap`): arrastrar gira, tocar cambia el estilo
+  const gesture = useRef(null);
+  const handlers = onTap && {
+    onPointerDown: (e) => {
+      gesture.current = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: 0 };
+      orbit.held = true;
+      orbit.vyaw = orbit.vpitch = 0;
+      try { e.currentTarget.setPointerCapture(e.pointerId); } catch {}
+    },
+    onPointerMove: (e) => {
+      const g = gesture.current;
+      if (!g || g.id !== e.pointerId) return;
+      const dx = e.clientX - g.x;
+      const dy = e.clientY - g.y;
+      g.x = e.clientX;
+      g.y = e.clientY;
+      g.moved += Math.abs(dx) + Math.abs(dy);
+      orbit.vyaw = dx * 0.006;
+      orbit.vpitch = dy * 0.006;
+      orbit.yaw += orbit.vyaw;
+      orbit.pitch = Math.max(-1.3, Math.min(1.3, orbit.pitch + orbit.vpitch));
+    },
+    onPointerUp: (e) => {
+      const g = gesture.current;
+      gesture.current = null;
+      orbit.held = false;
+      if (g && g.id === e.pointerId && g.moved < TAP_SLOP) onTap();
+    },
+    onPointerCancel: () => {
+      gesture.current = null;
+      orbit.held = false;
+    },
+  };
+
   return (
-    <div className="mts__bg" data-look={index} aria-hidden onClick={onTap} style={onTap ? { cursor: 'pointer' } : undefined}>
+    <div className="mts__bg" data-look={index} data-scene={scene} aria-hidden {...handlers} style={onTap ? { cursor: 'grab', touchAction: 'none' } : undefined}>
       <RetroCanvas tint="scene" dither={0.65} contrast={1.5} invert scanlines={0.6} scanlineSize={1} scanlineRoll={0.65} vignette={0} flicker={0} glitch={0.05} cameraZ={9} pointerFx="parallax" pointerStrength={0.7} interaction="window" {...(LOOKS[index] ?? LOOKS[0])} {...(burst ? BURST : null)}>
-        <TrackShapes kinds={kinds} />
+        <Orbit>
+          {scene === 'spectrum' ? <Spectrum /> : scene === 'terrain' ? <Terrain /> : scene === 'notes' ? <Notes /> : <TrackShapes kinds={kinds} />}
+        </Orbit>
       </RetroCanvas>
     </div>
   );

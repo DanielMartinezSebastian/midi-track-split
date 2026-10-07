@@ -4,13 +4,19 @@
 
 :root {
   color-scheme: dark;
+  /* colores de la página fuera de la app (contenido estático y pie); la app usa los tokens de Trama */
+  --p-bg: #000;
+  --p-fg: #f2f2f2;
+  --p-soft: #d2d2d2;
+  --p-mut: #9a9a9a;
+  --p-ln: rgba(255, 255, 255, 0.14);
   /* trama-ui espera estas variables de next/font; aquí las fuentes son locales (web/fonts/) */
   --font-inter: 'Inter';
   --font-jetbrains-mono: 'JetBrains Mono';
 }
 
 * { box-sizing: border-box; }
-html { background: #000; }
+html { background: var(--p-bg); }
 body { margin: 0; }
 
 .mts {
@@ -205,7 +211,7 @@ body { margin: 0; }
 
 /* ---------- contenido estático de index.html (bajo la app): qué es, cómo se usa y preguntas frecuentes.
    Está en el HTML, no en React, para que se lea sin JavaScript. Mismo lenguaje visual que la app ---------- */
-.info, .info-foot { --gutter: clamp(20px, 5vw, 72px); --ln: rgba(255, 255, 255, 0.14); --mut: #9a9a9a; --mono: 'JetBrains Mono', ui-monospace, monospace; position: relative; z-index: 5; color: #f2f2f2; background: rgba(0, 0, 0, 0.9); font: 400 16px/1.65 'Inter', ui-sans-serif, system-ui, sans-serif; }
+.info, .info-foot { --gutter: clamp(20px, 5vw, 72px); --ln: var(--p-ln); --mut: var(--p-mut); --mono: 'JetBrains Mono', ui-monospace, monospace; position: relative; z-index: 5; color: var(--p-fg); background: color-mix(in srgb, var(--p-bg) 90%, transparent); font: 400 16px/1.65 'Inter', ui-sans-serif, system-ui, sans-serif; }
 .info { padding: 0 var(--gutter); border-top: 1px solid var(--ln); }
 .info__body { display: grid; gap: clamp(40px, 6vw, 72px); padding-bottom: clamp(56px, 8vw, 110px); }
 .info__body > *, .info section > * { max-width: 68ch; }
@@ -213,26 +219,26 @@ body { margin: 0; }
 .info h1 { margin: 0; max-width: 14ch; font-size: clamp(40px, 7vw, 104px); line-height: 0.92; font-weight: 900; letter-spacing: -0.055em; }
 .info h2 { margin: 0 0 18px; font-size: clamp(24px, 3vw, 36px); line-height: 1.05; font-weight: 800; letter-spacing: -0.035em; }
 .info h3 { margin: 26px 0 6px; font-size: 17px; line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; }
-.info p, .info ol, .info ul { margin: 0 0 14px; color: #d2d2d2; }
+.info p, .info ol, .info ul { margin: 0 0 14px; color: var(--p-soft); }
 .info__lead { font-size: clamp(17px, 1.6vw, 20px); }
 .info ol, .info ul { padding-left: 1.3em; }
 .info li { margin-bottom: 8px; }
-.info strong { color: #f2f2f2; font-weight: 700; }
-.info code { font: 500 0.92em var(--mono); color: #f2f2f2; }
-.info a, .info-foot a { color: #f2f2f2; text-decoration: underline; text-underline-offset: 3px; }
-.info a:hover, .info-foot a:hover { background: #f2f2f2; color: #000; }
-.info a:focus-visible, .info-foot a:focus-visible { outline: 2px solid #f2f2f2; outline-offset: 3px; }
+.info strong { color: var(--p-fg); font-weight: 700; }
+.info code { font: 500 0.92em var(--mono); color: var(--p-fg); }
+.info a, .info-foot a { color: var(--p-fg); text-decoration: underline; text-underline-offset: 3px; }
+.info a:hover, .info-foot a:hover { background: var(--p-fg); color: var(--p-bg); }
+.info a:focus-visible, .info-foot a:focus-visible { outline: 2px solid var(--p-fg); outline-offset: 3px; }
 /* pie: quién, idiomas y enlace en una fila; la letra pequeña debajo */
 .info-foot { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 14px clamp(24px, 5vw, 64px); padding: 30px var(--gutter) 34px; border-top: 1px solid var(--ln); font-size: 13px; color: var(--mut); }
-.info-foot strong { display: block; margin-bottom: 8px; font: 700 12px/1 var(--mono); letter-spacing: 0.4em; text-transform: uppercase; color: #f2f2f2; }
+.info-foot strong { display: block; margin-bottom: 8px; font: 700 12px/1 var(--mono); letter-spacing: 0.4em; text-transform: uppercase; color: var(--p-fg); }
 .info-foot p { margin: 0; }
 .info-foot__small { grid-column: 1 / -1; padding-top: 14px; border-top: 1px solid var(--ln); font: 500 10px/1.4 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; }
 @media (max-width: 760px) {
   .info-foot { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .info-foot__site { justify-self: start; margin-bottom: 10px; }
 }
-.info-foot__site { display: inline-flex; align-items: center; min-height: 44px; font: 700 12px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; text-decoration: none !important; border-bottom: 1px solid #f2f2f2; }
-.info-noscript { position: relative; z-index: 6; margin: 0; padding: 16px clamp(20px, 5vw, 72px); background: #f2f2f2; color: #000; font: 600 15px/1.4 'Inter', sans-serif; }
+.info-foot__site { display: inline-flex; align-items: center; min-height: 44px; font: 700 12px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; text-decoration: none !important; border-bottom: 1px solid var(--p-fg); }
+.info-noscript { position: relative; z-index: 6; margin: 0; padding: 16px clamp(20px, 5vw, 72px); background: var(--p-fg); color: var(--p-bg); font: 600 15px/1.4 'Inter', sans-serif; }
 /* el transporte fijo no debe tapar el final de la página */
 body:has(.mts-dock) .info-foot { padding-bottom: calc(84px + 36px); }
 /* a pantalla completa, o con ?bare, solo las visuales */
@@ -241,8 +247,8 @@ body:has(.mts--visual) .info, body:has(.mts--visual) .info-foot, body:has(.mts--
 /* ---------- idiomas: enlaces en el pie estático y desplegable en la cabecera ---------- */
 .info-foot__langs { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font: 700 12px/1 'JetBrains Mono', monospace; letter-spacing: 0.2em; text-transform: uppercase; }
 .info-foot__langs a, .info-foot__langs span { display: inline-flex; align-items: center; min-height: 44px; }
-.info-foot__langs span { color: #f2f2f2; border-bottom: 1px solid #f2f2f2; }
-.info-foot__langs a { text-decoration: none; color: #9a9a9a; }
+.info-foot__langs span { color: var(--p-fg); border-bottom: 1px solid var(--p-fg); }
+.info-foot__langs a { text-decoration: none; color: var(--p-mut); }
 .mts__nav .ui-nav__menu { background: var(--bg) !important; border: 1px solid var(--ln); border-radius: 0; box-shadow: none; }
 .mts__nav .ui-nav__menu .ui-nav__mitem, .mts__nav .ui-nav__menu a { font: 700 12px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg); }
 .mts__nav .ui-nav__trigger { font: 500 11px/1 var(--mono); letter-spacing: 0.28em; text-transform: uppercase; color: var(--mut); }
@@ -253,12 +259,35 @@ body:has(.mts--visual) .info, body:has(.mts--visual) .info-foot, body:has(.mts--
 .info__fold > summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 10px 24px; padding: clamp(40px, 6vw, 80px) 0 clamp(28px, 4vw, 48px); cursor: pointer; list-style: none; touch-action: manipulation; }
 .info__fold > summary::-webkit-details-marker { display: none; }
 .info__fold > summary .info__label { grid-column: 1 / -1; }
-.info__fold > summary:focus-visible { outline: 2px solid #f2f2f2; outline-offset: 6px; }
-.info__mark { position: relative; width: 44px; height: 44px; border: 1px solid color-mix(in srgb, #f2f2f2 45%, transparent); }
-.info__mark::before, .info__mark::after { content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 2px; background: #f2f2f2; transform: translate(-50%, -50%); }
+.info__fold > summary:focus-visible { outline: 2px solid var(--p-fg); outline-offset: 6px; }
+.info__mark { position: relative; width: 44px; height: 44px; border: 1px solid color-mix(in srgb, var(--p-fg) 45%, transparent); }
+.info__mark::before, .info__mark::after { content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 2px; background: var(--p-fg); transform: translate(-50%, -50%); }
 .info__mark::after { transform: translate(-50%, -50%) rotate(90deg); transition: transform 0.2s; }
 .info__fold[open] .info__mark::after { transform: translate(-50%, -50%) rotate(0deg); }
 /* plegado: una sola línea discreta */
 .info__fold:not([open]) > summary { padding-block: 22px; align-items: center; }
 .info__fold:not([open]) > summary .info__label { display: none; }
-.info__fold:not([open]) h1 { max-width: none; font-size: clamp(16px, 2vw, 20px); line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; color: #d2d2d2; }
+.info__fold:not([open]) h1 { max-width: none; font-size: clamp(16px, 2vw, 20px); line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; color: var(--p-soft); }
+
+/* ---------- selector de escena del fondo: en la portada y, a pantalla completa, en la cabecera ---------- */
+.mts__scene { position: relative; z-index: 100; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border: 1px solid color-mix(in srgb, var(--fg) 45%, transparent); border-radius: 0; background: color-mix(in srgb, var(--bg) 80%, transparent); color: var(--fg); font: 700 12px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; white-space: nowrap; }
+.mts__scene span { color: var(--mut); font-weight: 500; }
+.mts__scene i { font-style: normal; font-size: 16px; line-height: 0.6; }
+.mts__scene:hover { border-color: var(--fg); }
+.mts__scene:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.mts__hero-side { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px 20px; }
+@media (max-width: 640px) {
+  .mts__hero-side { flex: 1 1 100%; justify-content: space-between; }
+  .mts__nav .mts__scene span { display: none; }
+}
+
+/* a pantalla completa el selector de escena es un icono como el de pantalla completa, sin texto ni recuadro */
+.mts__scene-icon svg { stroke-linejoin: miter; }
+.mts--visual .mts__nav .mts__scene-icon { transform: none; }
+
+/* ---------- tema claro: el mismo diseño en negativo (botón de la portada; se recuerda) ---------- */
+:root[data-theme="light"] { color-scheme: light; --p-bg: #f2f2f2; --p-fg: #0a0a0a; --p-soft: #262626; --p-mut: #5e5e5e; --p-ln: rgba(0, 0, 0, 0.18); }
+/* el logo es blanco sobre negro: en claro se invierte */
+:root[data-theme="light"] .mts__nav .ui-nav__brand::before { filter: invert(1); }
+.mts__theme .fill { fill: currentColor; stroke: none; }
+.mts__hero-side .mts__theme { z-index: 6; }
