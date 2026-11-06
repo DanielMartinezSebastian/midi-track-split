@@ -182,10 +182,15 @@ function buildPlayer(arrayBuffer) {
   state.duration = midi.duration;
   const ac = rawContext();
 
-  state.parts = midi.tracks
-    .filter((t) => t.notes.length > 0)
-    .map((track) => {
-      const notes = track.notes.map((n) => ({
+  // Una parte por cada pista de state.tracks (mismo índice). @tonejs/midi parte
+  // cada pista del original en una por canal, así que se lee cada pista aislada
+  // por separado y se juntan sus canales.
+  state.parts = state.tracks
+    .map((t) => new Midi(t.data).tracks.filter((sub) => sub.notes.length > 0))
+    .map((subs) => {
+      // El instrumento lo marca el canal con más notas.
+      const track = subs.reduce((a, b) => (b.notes.length > a.notes.length ? b : a));
+      const notes = subs.flatMap((sub) => sub.notes).sort((a, b) => a.time - b.time).map((n) => ({
         time: n.time,
         midi: n.midi,
         name: n.name,
